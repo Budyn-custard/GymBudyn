@@ -154,17 +154,93 @@ export default function WorkoutSessionScreen() {
   };
 
   const handleFinish = () => {
-    Alert.alert(
-      'Finish Workout',
-      'Are you sure you want to finish this workout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Finish',
-          onPress: saveAndFinish,
-        },
-      ]
-    );
+    // Check for unfinished sets
+    const unfinishedSets = exercises.flatMap(exercise => 
+      exercise.sets.map((set, setIndex) => ({ 
+        exerciseName: exercise.name, 
+        setNumber: setIndex + 1, 
+        completed: set.completed 
+      }))
+    ).filter(set => !set.completed);
+
+    if (unfinishedSets.length > 0) {
+      const exerciseNames = [...new Set(unfinishedSets.map(s => s.exerciseName))];
+      Alert.alert(
+        'Unfinished Sets',
+        `You have ${unfinishedSets.length} unfinished sets in ${exerciseNames.length} exercise(s). What would you like to do?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Complete All',
+            onPress: () => completeAllSetsAndFinish(),
+          },
+          {
+            text: 'Remove Unfinished',
+            onPress: () => removeUnfinishedSetsAndFinish(),
+            style: 'destructive',
+          },
+        ]
+      );
+    } else {
+      // All sets completed, proceed normally
+      Alert.alert(
+        'Finish Workout',
+        'Are you sure you want to finish this workout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Finish',
+            onPress: saveAndFinish,
+          },
+        ]
+      );
+    }
+  };
+
+  const completeAllSetsAndFinish = () => {
+    // Mark all unfinished sets as completed
+    setExercises(exercises.map(exercise => ({
+      ...exercise,
+      sets: exercise.sets.map(set => ({ ...set, completed: true }))
+    })));
+    
+    // Then proceed to save
+    setTimeout(() => {
+      Alert.alert(
+        'Finish Workout',
+        'All sets marked as complete. Are you sure you want to finish this workout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Finish',
+            onPress: saveAndFinish,
+          },
+        ]
+      );
+    }, 100);
+  };
+
+  const removeUnfinishedSetsAndFinish = () => {
+    // Remove all unfinished sets
+    setExercises(exercises.map(exercise => ({
+      ...exercise,
+      sets: exercise.sets.filter(set => set.completed)
+    })));
+    
+    // Then proceed to save
+    setTimeout(() => {
+      Alert.alert(
+        'Finish Workout',
+        'Unfinished sets removed. Are you sure you want to finish this workout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Finish',
+            onPress: saveAndFinish,
+          },
+        ]
+      );
+    }, 100);
   };
 
   const saveAndFinish = async () => {
@@ -172,15 +248,22 @@ export default function WorkoutSessionScreen() {
       console.log('Starting workout save...');
       const duration = Math.round((Date.now() - startTime) / 60000); // minutes
 
+      const completedExercises = exercises.map(ex => ({
+        name: ex.name,
+        sets: ex.sets.filter(set => set.completed), // Only save completed sets
+      })).filter(ex => ex.sets.length > 0); // Only include exercises with completed sets
+
+      if (completedExercises.length === 0) {
+        Alert.alert('Error', 'No completed sets to save. Please complete at least one set.');
+        return;
+      }
+
       const workout: Workout = {
         id: Date.now().toString(),
         date: new Date().toISOString().split('T')[0],
         templateId: template.id,
         templateName: template.name,
-        exercises: exercises.map(ex => ({
-          name: ex.name,
-          sets: ex.sets,
-        })),
+        exercises: completedExercises,
         notes: notes.trim() || undefined,
         duration,
       };

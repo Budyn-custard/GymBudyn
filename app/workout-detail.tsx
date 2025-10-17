@@ -12,7 +12,17 @@ export default function WorkoutDetailScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
 
-  const workout: Workout = JSON.parse(params.workout as string);
+  let workout: Workout;
+  try {
+    workout = JSON.parse(params.workout as string);
+  } catch (error) {
+    console.error('Error parsing workout data:', error);
+    return (
+      <ThemedView style={styles.container}>
+        <ThemedText>Error loading workout data</ThemedText>
+      </ThemedView>
+    );
+  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -24,9 +34,18 @@ export default function WorkoutDetailScreen() {
     });
   };
 
-  const totalSets = workout.exercises.reduce((sum, ex) => sum + ex.sets.length, 0);
+  // Safety checks for workout data
+  if (!workout || !workout.exercises || !Array.isArray(workout.exercises)) {
+    return (
+      <ThemedView style={styles.container}>
+        <ThemedText>Invalid workout data</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  const totalSets = workout.exercises.reduce((sum, ex) => sum + (ex.sets?.length || 0), 0);
   const totalVolume = workout.exercises.reduce(
-    (sum, ex) => sum + ex.sets.reduce((s, set) => s + set.weight * set.reps, 0),
+    (sum, ex) => sum + (ex.sets || []).reduce((s, set) => s + (set.weight || 0) * (set.reps || 0), 0),
     0
   );
 
@@ -68,8 +87,8 @@ export default function WorkoutDetailScreen() {
           <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
           
           {workout.exercises.map((exercise, index) => {
-            const exerciseVolume = exercise.sets.reduce(
-              (sum, set) => sum + set.weight * set.reps,
+            const exerciseVolume = (exercise.sets || []).reduce(
+              (sum, set) => sum + (set.weight || 0) * (set.reps || 0),
               0
             );
 
@@ -88,20 +107,20 @@ export default function WorkoutDetailScreen() {
                     <ThemedText style={styles.tableHeaderText}>Volume</ThemedText>
                   </View>
 
-                  {exercise.sets.map((set, setIndex) => (
+                  {(exercise.sets || []).map((set, setIndex) => (
                     <View key={setIndex} style={styles.tableRow}>
                       <ThemedText style={styles.tableCell}>{setIndex + 1}</ThemedText>
-                      <ThemedText style={styles.tableCell}>{set.weight} kg</ThemedText>
-                      <ThemedText style={styles.tableCell}>{set.reps}</ThemedText>
+                      <ThemedText style={styles.tableCell}>{set.weight || 0} kg</ThemedText>
+                      <ThemedText style={styles.tableCell}>{set.reps || 0}</ThemedText>
                       <ThemedText style={styles.tableCell}>
-                        {Math.round(set.weight * set.reps)} kg
+                        {Math.round((set.weight || 0) * (set.reps || 0))} kg
                       </ThemedText>
                     </View>
                   ))}
 
                   <View style={[styles.tableFooter, { borderTopColor: colors.border }]}>
                     <ThemedText style={styles.tableFooterText}>
-                      {exercise.sets.length} sets - {Math.round(exerciseVolume)} kg total
+                      {(exercise.sets || []).length} sets - {Math.round(exerciseVolume)} kg total
                     </ThemedText>
                   </View>
                 </View>
