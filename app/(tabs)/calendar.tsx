@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
+    lineHeight: 24,
   },
   statsRow: {
     flexDirection: 'row',
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
+    lineHeight: 24,
   },
   workoutItem: {
     paddingVertical: 8,

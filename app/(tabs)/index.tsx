@@ -3,10 +3,11 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useData } from '@/contexts/DataContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Template } from '@/types';
+import { storageService } from '@/services/storage';
+import { ActiveWorkoutSession, Template } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen() {
@@ -15,6 +16,34 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [activeWorkout, setActiveWorkout] = useState<ActiveWorkoutSession | null>(null);
+
+  // Check for active workout when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const checkActiveWorkout = async () => {
+        console.log('[HomeScreen] Checking for active workout...');
+        const active = await storageService.getActiveWorkout();
+        console.log('[HomeScreen] Active workout:', active ? 'Found' : 'None', active?.finishedDate ? '(finished)' : '');
+        
+        // Only show active workout if it doesn't have a finishedDate set
+        // This ensures we never display a workout that has been completed
+        if (active && !active.finishedDate) {
+          console.log('[HomeScreen] Setting active workout:', active.template.name);
+          setActiveWorkout(active);
+        } else if (active && active.finishedDate) {
+          console.log('[HomeScreen] Clearing finished workout from storage');
+          // Clear finished workout from storage if it somehow wasn't cleared
+          await storageService.clearActiveWorkout();
+          setActiveWorkout(null);
+        } else {
+          console.log('[HomeScreen] No active workout to display');
+          setActiveWorkout(null);
+        }
+      };
+      checkActiveWorkout();
+    }, [])
+  );
 
   const thisWeekWorkouts = workouts.filter((w) => {
     const workoutDate = new Date(w.date);
@@ -50,6 +79,33 @@ export default function HomeScreen() {
     });
   };
 
+  const handleResumeWorkout = () => {
+    if (activeWorkout) {
+      router.push({
+        pathname: '/workout-session',
+        params: { template: JSON.stringify(activeWorkout.template) },
+      });
+    }
+  };
+
+  const handleDiscardActiveWorkout = () => {
+    Alert.alert(
+      'Discard Workout',
+      'Are you sure you want to discard your active workout? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Discard',
+          style: 'destructive',
+          onPress: async () => {
+            await storageService.clearActiveWorkout();
+            setActiveWorkout(null);
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -59,6 +115,39 @@ export default function HomeScreen() {
             {thisWeekWorkouts.length} workout{thisWeekWorkouts.length !== 1 ? 's' : ''} this week
           </ThemedText>
         </View>
+
+        {activeWorkout && (
+          <View style={[styles.activeWorkoutCard, { backgroundColor: '#FF9500', borderColor: '#FF9500' }]}>
+            <View style={styles.activeWorkoutContent}>
+              <View style={styles.activeWorkoutHeader}>
+                <Ionicons name="timer" size={24} color="#fff" />
+                <View style={styles.activeWorkoutInfo}>
+                  <ThemedText style={styles.activeWorkoutTitle}>Workout in Progress</ThemedText>
+                  <ThemedText style={styles.activeWorkoutSubtitle}>
+                    {activeWorkout.template.name}
+                  </ThemedText>
+                </View>
+              </View>
+              <View style={styles.activeWorkoutActions}>
+                <TouchableOpacity
+                  style={[styles.resumeButton, { backgroundColor: '#fff' }]}
+                  onPress={handleResumeWorkout}
+                >
+                  <Ionicons name="play" size={20} color="#FF9500" />
+                  <ThemedText style={[styles.resumeButtonText, { color: '#FF9500' }]}>
+                    Resume
+                  </ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.discardButton}
+                  onPress={handleDiscardActiveWorkout}
+                >
+                  <Ionicons name="close-circle" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
         <TouchableOpacity
           style={[styles.primaryButton, { backgroundColor: colors.tint }]}
@@ -163,6 +252,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
+    lineHeight: 34,
   },
   heroSubtitle: {
     fontSize: 16,
@@ -282,5 +372,63 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.7,
     marginTop: 4,
+  },
+  activeWorkoutCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  activeWorkoutContent: {
+    gap: 12,
+  },
+  activeWorkoutHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  activeWorkoutInfo: {
+    flex: 1,
+  },
+  activeWorkoutTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  activeWorkoutSubtitle: {
+    fontSize: 14,
+    color: '#fff',
+    opacity: 0.9,
+    marginTop: 2,
+  },
+  activeWorkoutActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  resumeButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  resumeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  discardButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
 });

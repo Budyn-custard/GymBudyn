@@ -29,6 +29,8 @@ export interface WorkoutExercise {
 export interface Workout {
   id: string;
   date: string; // ISO date string
+  startDateTime?: string; // ISO datetime string - when workout started
+  endDateTime?: string; // ISO datetime string - when workout was finished
   templateId?: string;
   templateName: string;
   exercises: WorkoutExercise[];
@@ -39,6 +41,19 @@ export interface Workout {
 export interface AppData {
   templates: Template[];
   workouts: Workout[];
+}
+
+export interface ActiveWorkoutSession {
+  template: Template;
+  exercises: Array<{
+    id: string;
+    name: string;
+    sets: WorkoutSet[];
+    previousData?: WorkoutExercise;
+  }>;
+  notes: string;
+  startTime: number;
+  finishedDate?: string; // ISO date string when workout was finished
 }
 
 // Exercise library from JSON

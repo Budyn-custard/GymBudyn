@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import { DataProvider } from '@/contexts/DataContext';
@@ -14,16 +15,18 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <DataProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="workout-session" options={{ presentation: 'card', title: 'Workout Session' }} />
-          <Stack.Screen name="template-form" options={{ presentation: 'modal', title: 'Template' }} />
-          <Stack.Screen name="workout-detail" options={{ presentation: 'card', title: 'Workout Details' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </DataProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DataProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="workout-session" options={{ presentation: 'card', title: 'Workout Session' }} />
+            <Stack.Screen name="template-form" options={{ presentation: 'modal', title: 'Template' }} />
+            <Stack.Screen name="workout-detail" options={{ presentation: 'card', title: 'Workout Details' }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </DataProvider>
+    </GestureHandlerRootView>
   );
 }

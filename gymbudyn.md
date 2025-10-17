@@ -16,6 +16,10 @@
 - ✅ **Calendar** - Monthly view with workout frequency
 - ✅ **Exercise Library** - 50+ exercises with search/filter
 - ✅ **Progress Tracking** - Previous workout data integration
+- ✅ **Dynamic Exercise Management** - Add/remove exercises during workout via swipe & picker
+- ✅ **Active Workout Tracking** - Resume interrupted workouts with finished state detection
+- ✅ **Quick Input** - Auto-select text on focus for fast value editing
+- ✅ **DateTime Tracking** - Start and end timestamps for every workout session
 
 ## Data Models
 ```typescript
@@ -28,6 +32,8 @@ interface Template {
 interface Workout {
   id: string;
   date: string;
+  startDateTime?: string; // ISO datetime when workout started
+  endDateTime?: string; // ISO datetime when workout finished
   templateName: string;
   exercises: WorkoutExercise[];
   notes?: string;
@@ -49,6 +55,12 @@ interface WorkoutSet {
 - **Calendar** - Monthly workout view
 
 ## Current Status
-Production ready MVP with offline functionality. All core features implemented including set completion tracking, exercise library integration, and template management.
+Production ready MVP with offline functionality. Full workout management including:
+- Dynamic exercise add/remove during active sessions
+- Swipe-to-delete gesture support for exercises
+- Active workout state persistence with finished date tracking
+- Quick text selection for efficient data entry
+- Complete datetime tracking with start and end timestamps
+- Active workout tile filters out completed workouts (with endDateTime set)
 
 **To run:** `npx expo start`

@@ -1,7 +1,8 @@
-import { AppData, Template, Workout, WorkoutExercise } from '@/types';
+import { ActiveWorkoutSession, AppData, Template, Workout, WorkoutExercise } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@gymbudyn_data';
+const ACTIVE_WORKOUT_KEY = '@gymbudyn_active_workout';
 
 const defaultData: AppData = {
   templates: [],
@@ -110,6 +111,34 @@ export const storageService = {
   // Clear all data (for testing)
   async clearAll(): Promise<void> {
     await AsyncStorage.removeItem(STORAGE_KEY);
+  },
+
+  // Active Workout Session
+  async saveActiveWorkout(session: ActiveWorkoutSession): Promise<void> {
+    try {
+      await AsyncStorage.setItem(ACTIVE_WORKOUT_KEY, JSON.stringify(session));
+    } catch (error) {
+      console.error('Error saving active workout:', error);
+      throw error;
+    }
+  },
+
+  async getActiveWorkout(): Promise<ActiveWorkoutSession | null> {
+    try {
+      const data = await AsyncStorage.getItem(ACTIVE_WORKOUT_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error('Error getting active workout:', error);
+      return null;
+    }
+  },
+
+  async clearActiveWorkout(): Promise<void> {
+    try {
+      await AsyncStorage.removeItem(ACTIVE_WORKOUT_KEY);
+    } catch (error) {
+      console.error('Error clearing active workout:', error);
+    }
   },
 };
 
