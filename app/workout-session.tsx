@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ExercisePicker } from '@/components/ui/exercise-picker';
 import { Colors } from '@/constants/theme';
 import { useData } from '@/contexts/DataContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Template, Workout, WorkoutExercise } from '@/types';
+import { ExerciseLibraryItem, Template, Workout, WorkoutExercise } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -36,6 +37,8 @@ export default function WorkoutSessionScreen() {
   const [exercises, setExercises] = useState<ExerciseState[]>([]);
   const [notes, setNotes] = useState('');
   const [startTime] = useState(Date.now());
+  const [showExercisePicker, setShowExercisePicker] = useState(false);
+  const [swappingExerciseId, setSwappingExerciseId] = useState<string | null>(null);
 
   useEffect(() => {
     const initializeExercises = async () => {
@@ -118,6 +121,31 @@ export default function WorkoutSessionScreen() {
     }));
   };
 
+  const swapExercise = (exerciseId: string) => {
+    setSwappingExerciseId(exerciseId);
+    setShowExercisePicker(true);
+  };
+
+  const handleExerciseSwap = async (libraryExercise: ExerciseLibraryItem) => {
+    if (!swappingExerciseId) return;
+
+    // Get previous data for the new exercise
+    const previousData = await getLastWorkoutWithExercise(libraryExercise.name);
+
+    setExercises(exercises.map(ex => {
+      if (ex.id === swappingExerciseId) {
+        return {
+          ...ex,
+          name: libraryExercise.name,
+          previousData: previousData || undefined,
+        };
+      }
+      return ex;
+    }));
+
+    setSwappingExerciseId(null);
+  };
+
   const handleFinish = () => {
     Alert.alert(
       'Finish Workout',
@@ -165,6 +193,15 @@ export default function WorkoutSessionScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <ExercisePicker
+        visible={showExercisePicker}
+        onClose={() => {
+          setShowExercisePicker(false);
+          setSwappingExerciseId(null);
+        }}
+        onSelect={handleExerciseSwap}
+        title="Swap Exercise"
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -182,24 +219,35 @@ export default function WorkoutSessionScreen() {
               key={exercise.id}
               style={[styles.exerciseCard, { backgroundColor: colors.card }]}
             >
-              <TouchableOpacity
-                style={styles.exerciseHeader}
-                onPress={() => toggleExpanded(exercise.id)}
-              >
-                <View style={styles.exerciseHeaderLeft}>
-                  <ThemedText style={styles.exerciseName}>{exercise.name}</ThemedText>
-                  {exercise.previousData && (
-                    <ThemedText style={styles.previousInfo}>
-                      Last: {exercise.previousData.sets[0]?.weight}kg × {exercise.previousData.sets[0]?.reps}
-                    </ThemedText>
-                  )}
-                </View>
-                 <Ionicons
-                   name={exercise.isExpanded ? 'chevron-up' : 'chevron-down'}
-                   size={20}
-                   color={colors.icon}
-                 />
-              </TouchableOpacity>
+              <View style={styles.exerciseHeaderContainer}>
+                <TouchableOpacity
+                  style={styles.exerciseHeader}
+                  onPress={() => toggleExpanded(exercise.id)}
+                >
+                  <View style={styles.exerciseHeaderLeft}>
+                    <ThemedText style={styles.exerciseName}>{exercise.name}</ThemedText>
+                    {exercise.previousData && (
+                      <ThemedText style={styles.previousInfo}>
+                        Last: {exercise.previousData.sets[0]?.weight}kg × {exercise.previousData.sets[0]?.reps}
+                      </ThemedText>
+                    )}
+                  </View>
+                   <Ionicons
+                     name={exercise.isExpanded ? 'chevron-up' : 'chevron-down'}
+                     size={20}
+                     color={colors.icon}
+                   />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.swapButton, { backgroundColor: colors.tint + '20' }]}
+                  onPress={() => swapExercise(exercise.id)}
+                >
+                  <Ionicons name="swap-horizontal" size={16} color={colors.tint} />
+                  <ThemedText style={[styles.swapButtonText, { color: colors.tint }]}>
+                    Swap
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
 
               {exercise.isExpanded && (
                 <View style={styles.exerciseContent}>
@@ -341,11 +389,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  exerciseHeaderContainer: {
+    padding: 16,
+    paddingBottom: 8,
+  },
   exerciseHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    marginBottom: 8,
+  },
+  swapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    borderRadius: 6,
+    gap: 6,
+  },
+  swapButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   exerciseHeaderLeft: {
     flex: 1,
@@ -360,8 +424,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   exerciseContent: {
-    padding: 16,
-    paddingTop: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   autofillButton: {
     flexDirection: 'row',

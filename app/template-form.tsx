@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ExercisePicker } from '@/components/ui/exercise-picker';
 import { Colors } from '@/constants/theme';
 import { useData } from '@/contexts/DataContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Exercise, Template } from '@/types';
+import { Exercise, ExerciseLibraryItem, Template } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -33,16 +34,39 @@ export default function TemplateFormScreen() {
   const [exercises, setExercises] = useState<Exercise[]>(
     existingTemplate?.exercises || []
   );
+  const [showExercisePicker, setShowExercisePicker] = useState(false);
+  const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null);
 
   const addExercise = () => {
+    setEditingExerciseId(null);
+    setShowExercisePicker(true);
+  };
+
+  const handleExerciseSelect = (libraryExercise: ExerciseLibraryItem) => {
     const newExercise: Exercise = {
       id: Date.now().toString(),
-      name: '',
+      name: libraryExercise.name,
       defaultSets: 3,
       defaultReps: 10,
       defaultWeight: 0,
     };
-    setExercises([...exercises, newExercise]);
+    
+    if (editingExerciseId) {
+      // Replace existing exercise
+      setExercises(exercises.map(ex => 
+        ex.id === editingExerciseId 
+          ? { ...ex, name: libraryExercise.name }
+          : ex
+      ));
+    } else {
+      // Add new exercise
+      setExercises([...exercises, newExercise]);
+    }
+  };
+
+  const changeExercise = (exerciseId: string) => {
+    setEditingExerciseId(exerciseId);
+    setShowExercisePicker(true);
   };
 
   const updateExercise = (id: string, field: keyof Exercise, value: any) => {
@@ -91,6 +115,12 @@ export default function TemplateFormScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <ExercisePicker
+        visible={showExercisePicker}
+        onClose={() => setShowExercisePicker(false)}
+        onSelect={handleExerciseSelect}
+        title={editingExerciseId ? 'Change Exercise' : 'Select Exercise'}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -139,16 +169,18 @@ export default function TemplateFormScreen() {
                 </View>
 
                 <ThemedText style={styles.fieldLabel}>Exercise Name</ThemedText>
-                <TextInput
-                  style={[styles.input, { 
+                <TouchableOpacity 
+                  style={[styles.exerciseNameButton, { 
                     backgroundColor: colorScheme === 'dark' ? '#333' : '#fff',
-                    color: colors.text,
+                    borderColor: colors.border,
                   }]}
-                  value={exercise.name}
-                  onChangeText={(text) => updateExercise(exercise.id, 'name', text)}
-                  placeholder="e.g., Bench Press"
-                  placeholderTextColor={colors.icon}
-                />
+                  onPress={() => changeExercise(exercise.id)}
+                >
+                  <ThemedText style={[styles.exerciseNameText, !exercise.name && { opacity: 0.5 }]}>
+                    {exercise.name || 'Select from library'}
+                  </ThemedText>
+                  <Ionicons name="chevron-down" size={20} color={colors.icon} />
+                </TouchableOpacity>
 
                 <View style={styles.row}>
                   <View style={styles.field}>
@@ -309,6 +341,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   field: {
+    flex: 1,
+  },
+  exerciseNameButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  exerciseNameText: {
+    fontSize: 16,
     flex: 1,
   },
   emptyState: {

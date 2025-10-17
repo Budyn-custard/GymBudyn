@@ -40,3 +40,17 @@ export interface AppData {
   workouts: Workout[];
 }
 
+// Exercise library from JSON
+export interface ExerciseLibraryItem {
+  id: number;
+  name: string;
+  muscleGroup: string;
+  primaryMuscle: string;
+  secondaryMuscles: string[];
+  equipment: string;
+  difficulty: string;
+  isCompound: boolean;
+  unit: string;
+  instructions: string;
+}
+
