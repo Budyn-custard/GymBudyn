@@ -21,7 +21,6 @@ import {
 
 interface ExerciseState extends WorkoutExercise {
   id: string;
-  isExpanded: boolean;
   previousData?: WorkoutExercise;
 }
 
@@ -51,8 +50,8 @@ export default function WorkoutSessionScreen() {
             sets: Array(ex.defaultSets).fill(null).map(() => ({
               weight: ex.defaultWeight,
               reps: ex.defaultReps,
+              completed: false,
             })),
-            isExpanded: false,
             previousData: previousData || undefined,
           };
         })
@@ -63,12 +62,6 @@ export default function WorkoutSessionScreen() {
     initializeExercises();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template.id]);
-
-  const toggleExpanded = (id: string) => {
-    setExercises(exercises.map(ex => 
-      ex.id === id ? { ...ex, isExpanded: !ex.isExpanded } : ex
-    ));
-  };
 
   const updateSet = (exerciseId: string, setIndex: number, field: 'weight' | 'reps', value: string) => {
     setExercises(exercises.map(ex => {
@@ -84,13 +77,27 @@ export default function WorkoutSessionScreen() {
     }));
   };
 
+  const toggleSetComplete = (exerciseId: string, setIndex: number) => {
+    setExercises(exercises.map(ex => {
+      if (ex.id === exerciseId) {
+        const newSets = [...ex.sets];
+        newSets[setIndex] = {
+          ...newSets[setIndex],
+          completed: !newSets[setIndex].completed,
+        };
+        return { ...ex, sets: newSets };
+      }
+      return ex;
+    }));
+  };
+
   const addSet = (exerciseId: string) => {
     setExercises(exercises.map(ex => {
       if (ex.id === exerciseId) {
         const lastSet = ex.sets[ex.sets.length - 1];
         return {
           ...ex,
-          sets: [...ex.sets, { weight: lastSet.weight, reps: lastSet.reps }],
+          sets: [...ex.sets, { weight: lastSet.weight, reps: lastSet.reps, completed: false }],
         };
       }
       return ex;
@@ -114,7 +121,7 @@ export default function WorkoutSessionScreen() {
       if (ex.id === exerciseId && ex.previousData) {
         return {
           ...ex,
-          sets: ex.previousData.sets.map(s => ({ ...s })),
+          sets: ex.previousData.sets.map(s => ({ ...s, completed: false })),
         };
       }
       return ex;
@@ -220,10 +227,7 @@ export default function WorkoutSessionScreen() {
               style={[styles.exerciseCard, { backgroundColor: colors.card }]}
             >
               <View style={styles.exerciseHeaderContainer}>
-                <TouchableOpacity
-                  style={styles.exerciseHeader}
-                  onPress={() => toggleExpanded(exercise.id)}
-                >
+                <View style={styles.exerciseHeader}>
                   <View style={styles.exerciseHeaderLeft}>
                     <ThemedText style={styles.exerciseName}>{exercise.name}</ThemedText>
                     {exercise.previousData && (
@@ -232,89 +236,96 @@ export default function WorkoutSessionScreen() {
                       </ThemedText>
                     )}
                   </View>
-                   <Ionicons
-                     name={exercise.isExpanded ? 'chevron-up' : 'chevron-down'}
-                     size={20}
-                     color={colors.icon}
-                   />
-                </TouchableOpacity>
+                  <View style={styles.exerciseHeaderActions}>
+                    {exercise.previousData && (
+                      <TouchableOpacity
+                        style={[styles.iconButton, { backgroundColor: colors.tint }]}
+                        onPress={() => autofillFromPrevious(exercise.id)}
+                      >
+                        <Ionicons name="refresh" size={18} color="#fff" />
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      style={[styles.iconButton, { backgroundColor: colors.tint + '40' }]}
+                      onPress={() => swapExercise(exercise.id)}
+                    >
+                      <Ionicons name="swap-horizontal" size={18} color={colors.tint} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.exerciseContent}>
+                <View style={styles.setHeader}>
+                  <ThemedText style={styles.setHeaderText}>Set</ThemedText>
+                  <ThemedText style={styles.setHeaderText}>Weight (kg)</ThemedText>
+                  <ThemedText style={styles.setHeaderText}>Reps</ThemedText>
+                  <ThemedText style={styles.setHeaderText}>Done</ThemedText>
+                  <View style={styles.setHeaderSpacer} />
+                </View>
+
+                {exercise.sets.map((set, setIndex) => (
+                  <View key={setIndex} style={styles.setRow}>
+                    <ThemedText style={styles.setNumber}>{setIndex + 1}</ThemedText>
+                    <TextInput
+                      style={[styles.setInput, { 
+                        backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
+                        color: colors.text,
+                        opacity: set.completed ? 0.5 : 1,
+                      }]}
+                      value={set.weight.toString()}
+                      onChangeText={(text) => updateSet(exercise.id, setIndex, 'weight', text)}
+                      keyboardType="decimal-pad"
+                      editable={!set.completed}
+                    />
+                    <TextInput
+                      style={[styles.setInput, { 
+                        backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
+                        color: colors.text,
+                        opacity: set.completed ? 0.5 : 1,
+                      }]}
+                      value={set.reps.toString()}
+                      onChangeText={(text) => updateSet(exercise.id, setIndex, 'reps', text)}
+                      keyboardType="numeric"
+                      editable={!set.completed}
+                    />
+                    <TouchableOpacity
+                      style={[
+                        styles.checkButton,
+                        { 
+                          backgroundColor: set.completed ? '#34C759' : 'transparent',
+                          borderColor: set.completed ? '#34C759' : colors.border,
+                        }
+                      ]}
+                      onPress={() => toggleSetComplete(exercise.id, setIndex)}
+                    >
+                      {set.completed && (
+                        <Ionicons name="checkmark" size={18} color="#fff" />
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => removeSet(exercise.id, setIndex)}
+                      disabled={exercise.sets.length === 1}
+                    >
+                       <Ionicons
+                         name="trash"
+                         size={20}
+                         color={exercise.sets.length > 1 ? '#FF3B30' : colors.icon}
+                       />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+
                 <TouchableOpacity
-                  style={[styles.swapButton, { backgroundColor: colors.tint + '20' }]}
-                  onPress={() => swapExercise(exercise.id)}
+                  style={[styles.addSetButton, { borderColor: colors.tint }]}
+                  onPress={() => addSet(exercise.id)}
                 >
-                  <Ionicons name="swap-horizontal" size={16} color={colors.tint} />
-                  <ThemedText style={[styles.swapButtonText, { color: colors.tint }]}>
-                    Swap
+                   <Ionicons name="add" size={16} color={colors.tint} />
+                  <ThemedText style={[styles.addSetText, { color: colors.tint }]}>
+                    Add Set
                   </ThemedText>
                 </TouchableOpacity>
               </View>
-
-              {exercise.isExpanded && (
-                <View style={styles.exerciseContent}>
-                  {exercise.previousData && (
-                    <TouchableOpacity
-                      style={[styles.autofillButton, { backgroundColor: colors.tint }]}
-                      onPress={() => autofillFromPrevious(exercise.id)}
-                    >
-                       <Ionicons name="refresh" size={16} color="#fff" />
-                      <ThemedText style={styles.autofillText}>
-                        Use Previous
-                      </ThemedText>
-                    </TouchableOpacity>
-                  )}
-
-                  <View style={styles.setHeader}>
-                    <ThemedText style={styles.setHeaderText}>Set</ThemedText>
-                    <ThemedText style={styles.setHeaderText}>Weight (kg)</ThemedText>
-                    <ThemedText style={styles.setHeaderText}>Reps</ThemedText>
-                    <View style={styles.setHeaderSpacer} />
-                  </View>
-
-                  {exercise.sets.map((set, setIndex) => (
-                    <View key={setIndex} style={styles.setRow}>
-                      <ThemedText style={styles.setNumber}>{setIndex + 1}</ThemedText>
-                      <TextInput
-                        style={[styles.setInput, { 
-                          backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
-                          color: colors.text,
-                        }]}
-                        value={set.weight.toString()}
-                        onChangeText={(text) => updateSet(exercise.id, setIndex, 'weight', text)}
-                        keyboardType="decimal-pad"
-                      />
-                      <TextInput
-                        style={[styles.setInput, { 
-                          backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
-                          color: colors.text,
-                        }]}
-                        value={set.reps.toString()}
-                        onChangeText={(text) => updateSet(exercise.id, setIndex, 'reps', text)}
-                        keyboardType="numeric"
-                      />
-                      <TouchableOpacity
-                        onPress={() => removeSet(exercise.id, setIndex)}
-                        disabled={exercise.sets.length === 1}
-                      >
-                         <Ionicons
-                           name="trash"
-                           size={20}
-                           color={exercise.sets.length > 1 ? '#FF3B30' : colors.icon}
-                         />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-
-                  <TouchableOpacity
-                    style={[styles.addSetButton, { borderColor: colors.tint }]}
-                    onPress={() => addSet(exercise.id)}
-                  >
-                     <Ionicons name="add" size={16} color={colors.tint} />
-                    <ThemedText style={[styles.addSetText, { color: colors.tint }]}>
-                      Add Set
-                    </ThemedText>
-                  </TouchableOpacity>
-                </View>
-              )}
             </View>
           ))}
 
@@ -397,22 +408,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  swapButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    borderRadius: 6,
-    gap: 6,
-  },
-  swapButtonText: {
-    fontSize: 13,
-    fontWeight: '600',
   },
   exerciseHeaderLeft: {
     flex: 1,
+  },
+  exerciseHeaderActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  iconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   exerciseName: {
     fontSize: 18,
@@ -426,20 +435,7 @@ const styles = StyleSheet.create({
   exerciseContent: {
     paddingHorizontal: 16,
     paddingBottom: 16,
-  },
-  autofillButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 12,
-    gap: 6,
-  },
-  autofillText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
+    paddingTop: 8,
   },
   setHeader: {
     flexDirection: 'row',
@@ -472,6 +468,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     fontSize: 16,
     textAlign: 'center',
+  },
+  checkButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addSetButton: {
     flexDirection: 'row',

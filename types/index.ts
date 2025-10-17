@@ -18,6 +18,7 @@ export interface Template {
 export interface WorkoutSet {
   weight: number;
   reps: number;
+  completed?: boolean;
 }
 
 export interface WorkoutExercise {
