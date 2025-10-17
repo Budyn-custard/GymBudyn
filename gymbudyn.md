@@ -240,7 +240,7 @@ The MVP is **98% complete** with all core features implemented. Icons have been 
 
 **To run the app:**
 ```bash
-npm start
+npx expo start
 ```
 
 **Current Status:** Ready for testing - icons fixed, debugging finish workout button

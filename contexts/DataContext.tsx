@@ -1,6 +1,6 @@
 import { storageService } from '@/services/storage';
 import { Template, Workout } from '@/types';
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 
 interface DataContextType {
   templates: Template[];
@@ -21,10 +21,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('[DataContext] Starting data refresh...');
       
       // Add a timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) => 
@@ -34,7 +33,6 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const dataPromise = storageService.getData();
       const data = await Promise.race([dataPromise, timeoutPromise]) as any;
       
-      console.log('[DataContext] Data loaded:', data);
       setTemplates(data.templates);
       setWorkouts(data.workouts.sort((a, b) => b.date.localeCompare(a.date)));
     } catch (error) {
@@ -44,38 +42,36 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setWorkouts([]);
     } finally {
       setLoading(false);
-      console.log('[DataContext] Loading complete');
     }
-  };
-
-  useEffect(() => {
-    console.log('[DataContext] Component mounted, initializing...');
-    refreshData();
   }, []);
 
-  const saveTemplate = async (template: Template) => {
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
+
+  const saveTemplate = useCallback(async (template: Template) => {
     await storageService.saveTemplate(template);
     await refreshData();
-  };
+  }, [refreshData]);
 
-  const deleteTemplate = async (templateId: string) => {
+  const deleteTemplate = useCallback(async (templateId: string) => {
     await storageService.deleteTemplate(templateId);
     await refreshData();
-  };
+  }, [refreshData]);
 
-  const saveWorkout = async (workout: Workout) => {
+  const saveWorkout = useCallback(async (workout: Workout) => {
     await storageService.saveWorkout(workout);
     await refreshData();
-  };
+  }, [refreshData]);
 
-  const deleteWorkout = async (workoutId: string) => {
+  const deleteWorkout = useCallback(async (workoutId: string) => {
     await storageService.deleteWorkout(workoutId);
     await refreshData();
-  };
+  }, [refreshData]);
 
-  const getLastWorkoutWithExercise = async (exerciseName: string) => {
+  const getLastWorkoutWithExercise = useCallback(async (exerciseName: string) => {
     return await storageService.getLastWorkoutWithExercise(exerciseName);
-  };
+  }, []);
 
   return (
     <DataContext.Provider

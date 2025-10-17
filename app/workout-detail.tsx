@@ -38,7 +38,7 @@ export default function WorkoutDetailScreen() {
           <ThemedText style={styles.date}>{formatDate(workout.date)}</ThemedText>
           
           {workout.duration && (
-            <ThemedText style={styles.duration}>⏱️ {workout.duration} minutes</ThemedText>
+            <ThemedText style={styles.duration}>Duration: {workout.duration} minutes</ThemedText>
           )}
         </View>
 
@@ -59,7 +59,7 @@ export default function WorkoutDetailScreen() {
 
         {workout.notes && (
           <View style={[styles.notesCard, { backgroundColor: colors.card }]}>
-            <ThemedText style={styles.notesTitle}>📝 Notes</ThemedText>
+            <ThemedText style={styles.notesTitle}>Notes</ThemedText>
             <ThemedText style={styles.notesText}>{workout.notes}</ThemedText>
           </View>
         )}
@@ -101,7 +101,7 @@ export default function WorkoutDetailScreen() {
 
                   <View style={[styles.tableFooter, { borderTopColor: colors.border }]}>
                     <ThemedText style={styles.tableFooterText}>
-                      {exercise.sets.length} sets • {Math.round(exerciseVolume)} kg total
+                      {exercise.sets.length} sets - {Math.round(exerciseVolume)} kg total
                     </ThemedText>
                   </View>
                 </View>

@@ -27,9 +27,7 @@ export const storageService = {
   // Get all data
   async getData(): Promise<AppData> {
     try {
-      console.log('[Storage] Getting data from AsyncStorage...');
       const data = await AsyncStorage.getItem(STORAGE_KEY);
-      console.log('[Storage] Data retrieved:', data ? 'Found' : 'Empty');
       return data ? JSON.parse(data) : defaultData;
     } catch (error) {
       console.error('[Storage] Error getting data:', error);

@@ -58,7 +58,8 @@ export default function WorkoutSessionScreen() {
     };
 
     initializeExercises();
-  }, [template.exercises, getLastWorkoutWithExercise]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [template.id]);
 
   const toggleExpanded = (id: string) => {
     setExercises(exercises.map(ex => 
