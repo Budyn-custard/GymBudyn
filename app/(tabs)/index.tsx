@@ -3,6 +3,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { useData } from '@/contexts/DataContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { convertDefaultTemplate, getDefaultTemplateOptions } from '@/services/defaultTemplates';
 import { storageService } from '@/services/storage';
 import { ActiveWorkoutSession, Template } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,7 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showDefaultTemplates, setShowDefaultTemplates] = useState(false);
   const [activeWorkout, setActiveWorkout] = useState<ActiveWorkoutSession | null>(null);
 
   // Check for active workout when screen comes into focus
@@ -106,6 +108,21 @@ export default function HomeScreen() {
     );
   };
 
+  const handleSelectDefaultTemplate = (templateOption: ReturnType<typeof getDefaultTemplateOptions>[0]) => {
+    const convertedTemplate = convertDefaultTemplate(templateOption.template, templateOption.dayIndex);
+    
+    if (!convertedTemplate) {
+      Alert.alert('Error', 'Failed to load template. Please try again.');
+      return;
+    }
+    
+    setShowDefaultTemplates(false);
+    router.push({
+      pathname: '/workout-session',
+      params: { template: JSON.stringify(convertedTemplate) },
+    });
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -183,6 +200,52 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         )}
+
+        {/* Default Templates Section */}
+        <View style={[styles.defaultTemplatesCard, { backgroundColor: colors.card }]}>
+          <TouchableOpacity
+            style={styles.defaultTemplatesHeader}
+            onPress={() => setShowDefaultTemplates(!showDefaultTemplates)}
+          >
+            <View style={styles.defaultTemplatesHeaderContent}>
+              <Ionicons name="fitness" size={24} color={colors.tint} />
+              <ThemedText style={styles.defaultTemplatesTitle}>Science-Based Templates</ThemedText>
+            </View>
+            <Ionicons 
+              name={showDefaultTemplates ? "chevron-up" : "chevron-down"} 
+              size={24} 
+              color={colors.icon} 
+            />
+          </TouchableOpacity>
+          
+          {showDefaultTemplates && (
+            <View style={styles.defaultTemplatesList}>
+              <ThemedText style={styles.defaultTemplatesSubtitle}>
+                Professional workout templates based on sports science research
+              </ThemedText>
+              {getDefaultTemplateOptions().map((option, index) => (
+                <TouchableOpacity
+                  key={`${option.template.id}-${option.dayIndex}`}
+                  style={[styles.defaultTemplateOption, { borderColor: colors.border }]}
+                  onPress={() => handleSelectDefaultTemplate(option)}
+                >
+                  <View style={styles.defaultTemplateOptionContent}>
+                    <ThemedText style={styles.defaultTemplateOptionName}>
+                      {option.displayName}
+                    </ThemedText>
+                    <ThemedText style={styles.defaultTemplateOptionDetail}>
+                      {option.exerciseCount} exercises • {option.template.split}
+                    </ThemedText>
+                    <ThemedText style={styles.defaultTemplateGoal}>
+                      {option.template.goal.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </ThemedText>
+                  </View>
+                  <Ionicons name="arrow-forward-circle" size={24} color={colors.tint} />
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
 
         <View style={styles.quickActions}>
           <TouchableOpacity
@@ -430,5 +493,68 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  defaultTemplatesCard: {
+    borderRadius: 12,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  defaultTemplatesHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  defaultTemplatesHeaderContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  defaultTemplatesTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  defaultTemplatesList: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
+  defaultTemplatesSubtitle: {
+    fontSize: 14,
+    opacity: 0.7,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  defaultTemplateOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 14,
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  defaultTemplateOptionContent: {
+    flex: 1,
+    marginRight: 12,
+  },
+  defaultTemplateOptionName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  defaultTemplateOptionDetail: {
+    fontSize: 13,
+    opacity: 0.7,
+    marginBottom: 4,
+  },
+  defaultTemplateGoal: {
+    fontSize: 12,
+    opacity: 0.6,
+    fontStyle: 'italic',
   },
 });

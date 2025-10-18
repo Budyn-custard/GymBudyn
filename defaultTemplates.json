@@ -1,0 +1,305 @@
+{
+    "templates": [
+      {
+        "id": 1,
+        "name": "Foundations A (Full Body)",
+        "goal": "general_strength",
+        "split": "Full Body",
+        "frequencyPerWeek": 3,
+        "scienceBase": "NSCA Beginner Resistance Training Guidelines (2022)",
+        "progression": {
+          "type": "double-progression",
+          "logic": "If all sets reach top rep range, increase load 2.5–5% next session",
+          "deloadFrequencyWeeks": 6
+        },
+        "days": [
+          {
+            "dayName": "Full Body",
+            "exercises": [
+              { "exerciseId": 91, "sets": 3, "reps": "8–10", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Barbell back squat for compound lower-body strength." },
+              { "exerciseId": 1, "sets": 3, "reps": "8–10", "muscleGroup": "Chest", "alternatives": [4, 5], "notes": "Bench press for chest, shoulders, and triceps." },
+              { "exerciseId": 21, "sets": 3, "reps": "8–10", "muscleGroup": "Back", "alternatives": [23, 25], "notes": "Lat pulldown or assisted pull-up for upper back strength." },
+              { "exerciseId": 41, "sets": 2, "reps": "10–12", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Dumbbell overhead press to balance upper-body pressing." },
+              { "exerciseId": 62, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [63, 65], "notes": "Biceps curls for arm isolation." },
+              { "exerciseId": 72, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [74, 75], "notes": "Triceps extensions for arm balance." },
+              { "exerciseId": 123, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 126], "notes": "Plank hold or crunch for core engagement." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Foundations B (Upper/Lower Split)",
+        "goal": "hypertrophy_foundation",
+        "split": "Upper / Lower",
+        "frequencyPerWeek": 4,
+        "scienceBase": "NSCA Beginner Hypertrophy Volume Model (8–10 sets/muscle/week)",
+        "progression": {
+          "type": "double-progression",
+          "logic": "If user reaches top rep range across all sets, increase weight by 2.5–5%",
+          "deloadFrequencyWeeks": 6
+        },
+        "days": [
+          {
+            "dayName": "Upper",
+            "exercises": [
+              { "exerciseId": 1, "sets": 3, "reps": "8–10", "muscleGroup": "Chest", "alternatives": [4, 5], "notes": "Primary chest compound movement." },
+              { "exerciseId": 15, "sets": 3, "reps": "8–10", "muscleGroup": "Back", "alternatives": [18, 19], "notes": "Horizontal pull to complement pressing." },
+              { "exerciseId": 41, "sets": 3, "reps": "10–12", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press for shoulder stability." },
+              { "exerciseId": 62, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [63, 65], "notes": "Biceps work for balance." },
+              { "exerciseId": 72, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [74, 75], "notes": "Triceps pushdown for press support." },
+              { "exerciseId": 123, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 125], "notes": "Plank or crunch variation." }
+            ]
+          },
+          {
+            "dayName": "Lower",
+            "exercises": [
+              { "exerciseId": 91, "sets": 3, "reps": "8–10", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Primary squat movement." },
+              { "exerciseId": 97, "sets": 3, "reps": "8–10", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "Hip hinge pattern, e.g., Romanian deadlift." },
+              { "exerciseId": 105, "sets": 3, "reps": "10–12", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Glute bridge or hip thrust for posterior chain balance." },
+              { "exerciseId": 109, "sets": 3, "reps": "12–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Calf raises for full lower-body development." },
+              { "exerciseId": 128, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [129, 130], "notes": "Hanging leg raise or cable crunch for core endurance." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Push Pull Legs (Intermediate)",
+        "goal": "hypertrophy",
+        "split": "Push / Pull / Legs",
+        "frequencyPerWeek": 6,
+        "scienceBase": "Schoenfeld & Helms Hypertrophy Principles (10–20 sets/muscle/week, 1–3 RIR)",
+        "progression": {
+          "type": "double-progression",
+          "logic": "When all sets reach top rep range, increase load by 2.5–5%. Optionally alternate rep targets weekly.",
+          "deloadFrequencyWeeks": 6
+        },
+        "days": [
+          {
+            "dayName": "Push",
+            "exercises": [
+              { "exerciseId": 1, "sets": 4, "reps": "6–10", "muscleGroup": "Chest", "alternatives": [2, 4], "notes": "Main horizontal press — focus on progressive overload." },
+              { "exerciseId": 5, "sets": 3, "reps": "10–12", "muscleGroup": "Chest", "alternatives": [6, 7], "notes": "Incline press variation for upper pec development." },
+              { "exerciseId": 41, "sets": 4, "reps": "8–10", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press to target anterior and medial delts." },
+              { "exerciseId": 72, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [73, 74], "notes": "Triceps pushdown or skullcrusher variation." },
+              { "exerciseId": 123, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 125], "notes": "Core stability emphasis; optional cable crunch." }
+            ]
+          },
+          {
+            "dayName": "Pull",
+            "exercises": [
+              { "exerciseId": 15, "sets": 4, "reps": "8–10", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Barbell or cable row for mid-back." },
+              { "exerciseId": 21, "sets": 4, "reps": "8–10", "muscleGroup": "Back", "alternatives": [22, 23], "notes": "Vertical pull pattern (lat pulldown or pull-up)." },
+              { "exerciseId": 63, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [64, 65], "notes": "Biceps curl for elbow flexion strength." },
+              { "exerciseId": 67, "sets": 3, "reps": "10–15", "muscleGroup": "Arms", "alternatives": [68, 69], "notes": "Hammer curl variation for brachialis and forearms." },
+              { "exerciseId": 128, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [129, 130], "notes": "Hanging leg raises for anti-extension control." }
+            ]
+          },
+          {
+            "dayName": "Legs",
+            "exercises": [
+              { "exerciseId": 91, "sets": 4, "reps": "6–8", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Primary compound lift, focus on progressive overload." },
+              { "exerciseId": 97, "sets": 4, "reps": "8–10", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "Hip hinge (Romanian deadlift or stiff leg)." },
+              { "exerciseId": 105, "sets": 3, "reps": "10–12", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Hip thrust or glute bridge accessory." },
+              { "exerciseId": 109, "sets": 3, "reps": "12–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Standing calf raise for gastroc strength." },
+              { "exerciseId": 123, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 126], "notes": "Plank or ab rollout core finisher." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Upper Lower 2.0 (Intermediate Strength)",
+        "goal": "hypertrophy_strength_mix",
+        "split": "Upper / Lower / Rest / Upper / Lower",
+        "frequencyPerWeek": 4,
+        "scienceBase": "Helms Strength-Hypertrophy Hybrid Protocol (2018)",
+        "progression": {
+          "type": "weekly-undulating",
+          "logic": "Alternate strength (6–8 reps) and hypertrophy (10–12 reps) weeks, deload every 6 weeks.",
+          "deloadFrequencyWeeks": 6
+        },
+        "days": [
+          {
+            "dayName": "Upper A (Heavy)",
+            "exercises": [
+              { "exerciseId": 1, "sets": 4, "reps": "6–8", "muscleGroup": "Chest", "alternatives": [2, 3], "notes": "Heavy compound press day." },
+              { "exerciseId": 15, "sets": 4, "reps": "6–8", "muscleGroup": "Back", "alternatives": [18, 19], "notes": "Barbell row or heavy horizontal pull." },
+              { "exerciseId": 41, "sets": 3, "reps": "8–10", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press moderate volume." },
+              { "exerciseId": 62, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [63, 65], "notes": "Biceps curl accessory." },
+              { "exerciseId": 72, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [74, 75], "notes": "Triceps accessory for push balance." }
+            ]
+          },
+          {
+            "dayName": "Lower A (Heavy)",
+            "exercises": [
+              { "exerciseId": 91, "sets": 4, "reps": "5–7", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Primary strength squat pattern." },
+              { "exerciseId": 97, "sets": 4, "reps": "5–7", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "RDL or conventional deadlift for posterior chain." },
+              { "exerciseId": 105, "sets": 3, "reps": "8–10", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Accessory hip extension work." },
+              { "exerciseId": 109, "sets": 3, "reps": "10–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Seated or standing calf raise." }
+            ]
+          },
+          {
+            "dayName": "Upper B (Volume)",
+            "exercises": [
+              { "exerciseId": 5, "sets": 4, "reps": "10–12", "muscleGroup": "Chest", "alternatives": [6, 7], "notes": "Incline dumbbell press for upper chest." },
+              { "exerciseId": 21, "sets": 4, "reps": "10–12", "muscleGroup": "Back", "alternatives": [22, 23], "notes": "Lat pulldown or pull-up." },
+              { "exerciseId": 44, "sets": 3, "reps": "10–12", "muscleGroup": "Shoulders", "alternatives": [45, 46], "notes": "Lateral raise isolation for medial delts." },
+              { "exerciseId": 63, "sets": 3, "reps": "12–15", "muscleGroup": "Arms", "alternatives": [64, 65], "notes": "High-rep biceps focus." },
+              { "exerciseId": 72, "sets": 3, "reps": "12–15", "muscleGroup": "Arms", "alternatives": [73, 74], "notes": "High-rep triceps work." }
+            ]
+          },
+          {
+            "dayName": "Lower B (Volume)",
+            "exercises": [
+              { "exerciseId": 94, "sets": 4, "reps": "10–12", "muscleGroup": "Legs", "alternatives": [95, 96], "notes": "Leg press for high-volume quad focus." },
+              { "exerciseId": 97, "sets": 3, "reps": "10–12", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "Hip hinge assistance pattern." },
+              { "exerciseId": 105, "sets": 3, "reps": "12–15", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Glute bridge or hip thrust high rep finisher." },
+              { "exerciseId": 109, "sets": 3, "reps": "12–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Calf raises for muscle endurance." },
+              { "exerciseId": 123, "sets": 3, "reps": "15–20", "muscleGroup": "Core", "alternatives": [124, 125], "notes": "Crunch or ab wheel finisher." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Mass Builder (Hypertrophy Overload)",
+        "goal": "lean_bulk",
+        "split": "Upper / Lower / Push / Pull / Legs",
+        "frequencyPerWeek": 5,
+        "scienceBase": "Schoenfeld Volume Landmark Model (2019) — 12–20 sets per muscle group per week",
+        "progression": {
+          "type": "volume-progression",
+          "logic": "Increase weekly sets by 1–2 until reaching maximum recoverable volume (MRV), then deload.",
+          "deloadFrequencyWeeks": 5
+        },
+        "days": [
+          {
+            "dayName": "Upper",
+            "exercises": [
+              { "exerciseId": 1, "sets": 4, "reps": "8–10", "muscleGroup": "Chest", "alternatives": [2, 3], "notes": "Flat bench for foundational chest growth." },
+              { "exerciseId": 15, "sets": 4, "reps": "8–10", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Heavy row to target lats and traps." },
+              { "exerciseId": 41, "sets": 3, "reps": "10–12", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press to develop delts." },
+              { "exerciseId": 63, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [64, 65], "notes": "Biceps curls for arm fullness." },
+              { "exerciseId": 72, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [73, 74], "notes": "Triceps extension for balanced arm development." }
+            ]
+          },
+          {
+            "dayName": "Lower",
+            "exercises": [
+              { "exerciseId": 91, "sets": 4, "reps": "6–8", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Barbell squat for quad and glute overload." },
+              { "exerciseId": 97, "sets": 3, "reps": "8–10", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "Romanian deadlift for hamstring hypertrophy." },
+              { "exerciseId": 105, "sets": 3, "reps": "10–12", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Hip thrust for glute engagement." },
+              { "exerciseId": 109, "sets": 3, "reps": "12–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Standing calf raise finisher." }
+            ]
+          },
+          {
+            "dayName": "Push",
+            "exercises": [
+              { "exerciseId": 1, "sets": 3, "reps": "8–10", "muscleGroup": "Chest", "alternatives": [2, 4], "notes": "Bench press focus day for horizontal pressing volume." },
+              { "exerciseId": 5, "sets": 3, "reps": "10–12", "muscleGroup": "Chest", "alternatives": [6, 7], "notes": "Incline press for upper chest." },
+              { "exerciseId": 44, "sets": 3, "reps": "12–15", "muscleGroup": "Shoulders", "alternatives": [45, 46], "notes": "Lateral raises for delt width." },
+              { "exerciseId": 72, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [73, 74], "notes": "Triceps pushdown for triceps volume." }
+            ]
+          },
+          {
+            "dayName": "Pull",
+            "exercises": [
+              { "exerciseId": 21, "sets": 4, "reps": "8–10", "muscleGroup": "Back", "alternatives": [22, 23], "notes": "Lat pulldown or pull-up variation." },
+              { "exerciseId": 15, "sets": 4, "reps": "10–12", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Row variation for horizontal pull." },
+              { "exerciseId": 63, "sets": 3, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [64, 65], "notes": "Biceps curl focus." },
+              { "exerciseId": 67, "sets": 3, "reps": "10–15", "muscleGroup": "Forearms", "alternatives": [68, 69], "notes": "Hammer curls for forearm density." }
+            ]
+          },
+          {
+            "dayName": "Legs (Accessory)",
+            "exercises": [
+              { "exerciseId": 94, "sets": 3, "reps": "10–12", "muscleGroup": "Legs", "alternatives": [95, 96], "notes": "Leg press for quad volume." },
+              { "exerciseId": 99, "sets": 3, "reps": "10–12", "muscleGroup": "Hamstrings", "alternatives": [100, 101], "notes": "Leg curl machine or dumbbell curl." },
+              { "exerciseId": 105, "sets": 3, "reps": "12–15", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Hip thrust or cable kickback." },
+              { "exerciseId": 123, "sets": 3, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 126], "notes": "Weighted crunches or ab wheel rollout." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "name": "Strength Builder (Power Focus)",
+        "goal": "pure_strength",
+        "split": "Full Body 3x",
+        "frequencyPerWeek": 3,
+        "scienceBase": "NSCA Strength Training Model (3–6 reps @75–90% 1RM, 3–5 min rest)",
+        "progression": {
+          "type": "linear-periodization",
+          "logic": "Start at 70% 1RM and increase intensity weekly by 2.5% until deload at week 6.",
+          "deloadFrequencyWeeks": 6
+        },
+        "days": [
+          {
+            "dayName": "Full Body (A)",
+            "exercises": [
+              { "exerciseId": 91, "sets": 5, "reps": "5", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Primary strength squat pattern." },
+              { "exerciseId": 1, "sets": 5, "reps": "5", "muscleGroup": "Chest", "alternatives": [2, 3], "notes": "Flat bench press heavy work." },
+              { "exerciseId": 15, "sets": 5, "reps": "5", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Heavy row for upper back thickness." },
+              { "exerciseId": 97, "sets": 3, "reps": "5", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "RDL or conventional deadlift at moderate intensity." }
+            ]
+          },
+          {
+            "dayName": "Full Body (B)",
+            "exercises": [
+              { "exerciseId": 93, "sets": 5, "reps": "3–5", "muscleGroup": "Legs", "alternatives": [94, 95], "notes": "Front squat or heavy leg press." },
+              { "exerciseId": 5, "sets": 4, "reps": "5–6", "muscleGroup": "Chest", "alternatives": [6, 7], "notes": "Incline press heavy compound." },
+              { "exerciseId": 21, "sets": 5, "reps": "5", "muscleGroup": "Back", "alternatives": [22, 23], "notes": "Weighted pull-up or heavy pulldown." },
+              { "exerciseId": 41, "sets": 3, "reps": "6–8", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press accessory." }
+            ]
+          },
+          {
+            "dayName": "Full Body (C)",
+            "exercises": [
+              { "exerciseId": 99, "sets": 5, "reps": "5", "muscleGroup": "Posterior Chain", "alternatives": [100, 101], "notes": "Deadlift day for maximal posterior strength." },
+              { "exerciseId": 1, "sets": 4, "reps": "5", "muscleGroup": "Chest", "alternatives": [2, 3], "notes": "Bench press at moderate load for volume." },
+              { "exerciseId": 15, "sets": 4, "reps": "5", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Row for balance with pressing strength." },
+              { "exerciseId": 72, "sets": 3, "reps": "8–10", "muscleGroup": "Arms", "alternatives": [74, 75], "notes": "Accessory triceps for lockout support." }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "Lean Cut (Maintenance Strength)",
+        "goal": "cutting_phase",
+        "split": "Upper / Lower / Upper / Lower",
+        "frequencyPerWeek": 4,
+        "scienceBase": "Helms Cutting Protocol (2018) — Maintain strength, reduce volume 30–40%",
+        "progression": {
+          "type": "maintenance-load",
+          "logic": "Maintain 70–80% of previous working weights, reduce volume, preserve muscle during deficit.",
+          "deloadFrequencyWeeks": 8
+        },
+        "days": [
+          {
+            "dayName": "Upper",
+            "exercises": [
+              { "exerciseId": 1, "sets": 3, "reps": "6–8", "muscleGroup": "Chest", "alternatives": [2, 4], "notes": "Keep load high to maintain neural adaptations." },
+              { "exerciseId": 15, "sets": 3, "reps": "6–8", "muscleGroup": "Back", "alternatives": [16, 17], "notes": "Row for upper back retention." },
+              { "exerciseId": 41, "sets": 2, "reps": "8–10", "muscleGroup": "Shoulders", "alternatives": [42, 43], "notes": "Overhead press accessory." },
+              { "exerciseId": 63, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [64, 65], "notes": "Biceps curls at lower volume." },
+              { "exerciseId": 72, "sets": 2, "reps": "10–12", "muscleGroup": "Arms", "alternatives": [73, 74], "notes": "Triceps accessory to maintain pressing capacity." }
+            ]
+          },
+          {
+            "dayName": "Lower",
+            "exercises": [
+              { "exerciseId": 91, "sets": 3, "reps": "6–8", "muscleGroup": "Legs", "alternatives": [92, 93], "notes": "Maintain heavy squats to preserve leg strength." },
+              { "exerciseId": 97, "sets": 3, "reps": "8–10", "muscleGroup": "Posterior Chain", "alternatives": [98, 99], "notes": "Deadlift variation for posterior engagement." },
+              { "exerciseId": 105, "sets": 2, "reps": "10–12", "muscleGroup": "Glutes", "alternatives": [106, 107], "notes": "Reduced glute volume to conserve energy." },
+              { "exerciseId": 109, "sets": 2, "reps": "12–15", "muscleGroup": "Calves", "alternatives": [110, 111], "notes": "Calf raises for maintenance." },
+              { "exerciseId": 123, "sets": 2, "reps": "12–15", "muscleGroup": "Core", "alternatives": [124, 126], "notes": "Plank or crunch light finisher." }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
