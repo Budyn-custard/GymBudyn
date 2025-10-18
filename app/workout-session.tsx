@@ -523,59 +523,95 @@ export default function WorkoutSessionScreen() {
                   <View style={styles.setHeaderSpacer} />
                 </View>
 
-                {exercise.sets.map((set, setIndex) => (
-                  <View key={setIndex} style={styles.setRow}>
-                    <ThemedText style={styles.setNumber}>{setIndex + 1}</ThemedText>
-                    <TextInput
-                      style={[styles.setInput, { 
-                        backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
-                        color: colors.text,
-                        opacity: set.completed ? 0.5 : 1,
-                      }]}
-                      value={set.weight.toString()}
-                      onChangeText={(text) => updateSet(exercise.id, setIndex, 'weight', text)}
-                      keyboardType="decimal-pad"
-                      editable={!set.completed}
-                      selectTextOnFocus={true}
-                    />
-                    <TextInput
-                      style={[styles.setInput, { 
-                        backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
-                        color: colors.text,
-                        opacity: set.completed ? 0.5 : 1,
-                      }]}
-                      value={set.reps.toString()}
-                      onChangeText={(text) => updateSet(exercise.id, setIndex, 'reps', text)}
-                      keyboardType="numeric"
-                      editable={!set.completed}
-                      selectTextOnFocus={true}
-                    />
-                    <TouchableOpacity
-                      style={[
-                        styles.checkButton,
-                        { 
-                          backgroundColor: set.completed ? '#34C759' : 'transparent',
-                          borderColor: set.completed ? '#34C759' : colors.border,
-                        }
-                      ]}
-                      onPress={() => toggleSetComplete(exercise.id, setIndex)}
-                    >
-                      {set.completed && (
-                        <Ionicons name="checkmark" size={18} color="#fff" />
+                {exercise.sets.map((set, setIndex) => {
+                  const previousSet = exercise.previousData?.sets[setIndex];
+                  const hasImprovement = previousSet && (
+                    set.weight > previousSet.weight || 
+                    (set.weight === previousSet.weight && set.reps > previousSet.reps)
+                  );
+                  
+                  return (
+                    <View key={setIndex}>
+                      <View style={styles.setRow}>
+                        <ThemedText style={styles.setNumber}>{setIndex + 1}</ThemedText>
+                        <TextInput
+                          style={[styles.setInput, { 
+                            backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
+                            color: colors.text,
+                            opacity: set.completed ? 0.5 : 1,
+                          }]}
+                          value={set.weight.toString()}
+                          onChangeText={(text) => updateSet(exercise.id, setIndex, 'weight', text)}
+                          keyboardType="decimal-pad"
+                          editable={!set.completed}
+                          selectTextOnFocus={true}
+                        />
+                        <TextInput
+                          style={[styles.setInput, { 
+                            backgroundColor: colorScheme === 'dark' ? '#333' : '#f5f5f5',
+                            color: colors.text,
+                            opacity: set.completed ? 0.5 : 1,
+                          }]}
+                          value={set.reps.toString()}
+                          onChangeText={(text) => updateSet(exercise.id, setIndex, 'reps', text)}
+                          keyboardType="numeric"
+                          editable={!set.completed}
+                          selectTextOnFocus={true}
+                        />
+                        <TouchableOpacity
+                          style={[
+                            styles.checkButton,
+                            { 
+                              backgroundColor: set.completed ? '#34C759' : 'transparent',
+                              borderColor: set.completed ? '#34C759' : colors.border,
+                            }
+                          ]}
+                          onPress={() => toggleSetComplete(exercise.id, setIndex)}
+                        >
+                          {set.completed && (
+                            <Ionicons name="checkmark" size={18} color="#fff" />
+                          )}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => removeSet(exercise.id, setIndex)}
+                          disabled={exercise.sets.length === 1}
+                        >
+                           <Ionicons
+                             name="trash"
+                             size={20}
+                             color={exercise.sets.length > 1 ? '#FF3B30' : colors.icon}
+                           />
+                        </TouchableOpacity>
+                      </View>
+                      {previousSet && (
+                        <View style={[styles.previousSetBadge, {
+                          backgroundColor: colorScheme === 'dark' ? 'rgba(255, 159, 10, 0.12)' : 'rgba(255, 149, 0, 0.08)',
+                          borderColor: hasImprovement && set.completed
+                            ? '#34C759' 
+                            : colorScheme === 'dark' ? 'rgba(255, 159, 10, 0.3)' : 'rgba(255, 149, 0, 0.2)',
+                        }]}>
+                          <View style={styles.previousSetContent}>
+                            <Ionicons 
+                              name={hasImprovement && set.completed ? "trending-up" : "time-outline"} 
+                              size={12} 
+                              color={hasImprovement && set.completed ? '#34C759' : colorScheme === 'dark' ? '#FF9F0A' : '#FF9500'} 
+                            />
+                            <ThemedText style={[styles.previousSetText, {
+                              color: hasImprovement && set.completed ? '#34C759' : colorScheme === 'dark' ? '#FF9F0A' : '#FF9500',
+                            }]}>
+                              Last: {previousSet.weight}kg × {previousSet.reps}
+                            </ThemedText>
+                            {hasImprovement && set.completed && (
+                              <ThemedText style={[styles.improvementBadge, { color: '#34C759' }]}>
+                                💪
+                              </ThemedText>
+                            )}
+                          </View>
+                        </View>
                       )}
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => removeSet(exercise.id, setIndex)}
-                      disabled={exercise.sets.length === 1}
-                    >
-                       <Ionicons
-                         name="trash"
-                         size={20}
-                         color={exercise.sets.length > 1 ? '#FF3B30' : colors.icon}
-                       />
-                    </TouchableOpacity>
-                  </View>
-                ))}
+                    </View>
+                  );
+                })}
 
                 <TouchableOpacity
                   style={[styles.addSetButton, { borderColor: colors.tint }]}
@@ -738,8 +774,30 @@ const styles = StyleSheet.create({
   setRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
     gap: 8,
+  },
+  previousSetBadge: {
+    marginLeft: 40,
+    marginRight: 32,
+    marginBottom: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  previousSetContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  previousSetText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  improvementBadge: {
+    fontSize: 12,
+    marginLeft: 2,
   },
   setNumber: {
     fontSize: 16,
