@@ -1,8 +1,9 @@
-import { ActiveWorkoutSession, AppData, Template, Workout, WorkoutExercise } from '@/types';
+import { ActiveWorkoutSession, AppData, Template, UserPreferences, Workout, WorkoutExercise } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@gymbudyn_data';
 const ACTIVE_WORKOUT_KEY = '@gymbudyn_active_workout';
+const PREFERENCES_KEY = '@gymbudyn_preferences';
 
 const defaultData: AppData = {
   templates: [],
@@ -138,6 +139,38 @@ export const storageService = {
       await AsyncStorage.removeItem(ACTIVE_WORKOUT_KEY);
     } catch (error) {
       console.error('Error clearing active workout:', error);
+    }
+  },
+
+  // User Preferences
+  async getUserPreferences(): Promise<UserPreferences> {
+    try {
+      const data = await AsyncStorage.getItem(PREFERENCES_KEY);
+      if (data) {
+        return JSON.parse(data);
+      }
+      // Default preferences
+      return {
+        weeklyFrequency: 3,
+        selectedDays: [],
+        hasCompletedOnboarding: false,
+      };
+    } catch (error) {
+      console.error('Error getting user preferences:', error);
+      return {
+        weeklyFrequency: 3,
+        selectedDays: [],
+        hasCompletedOnboarding: false,
+      };
+    }
+  },
+
+  async saveUserPreferences(preferences: UserPreferences): Promise<void> {
+    try {
+      await AsyncStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+    } catch (error) {
+      console.error('Error saving user preferences:', error);
+      throw error;
     }
   },
 };

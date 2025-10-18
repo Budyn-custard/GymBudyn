@@ -14,6 +14,14 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? 'light'].background,
+        },
+        headerTitleStyle: {
+          fontSize: 32,
+          fontWeight: 'bold',
+          color: Colors[colorScheme ?? 'light'].text,
+        },
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
@@ -42,6 +50,13 @@ export default function TabLayout() {
         options={{
           title: 'Calendar',
           tabBarIcon: ({ color }) => <Ionicons size={28} name="calendar" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="preferences"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-outline" color={color} />,
         }}
       />
     </Tabs>

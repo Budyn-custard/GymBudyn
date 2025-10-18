@@ -70,3 +70,11 @@ export interface ExerciseLibraryItem {
   instructions: string;
 }
 
+// User Preferences
+export interface UserPreferences {
+  weeklyFrequency: 3 | 4 | 5 | 6; // Number of workouts per week
+  selectedDays: string[]; // Array of day names: ['Monday', 'Wednesday', 'Friday']
+  preferredGoal?: 'general_strength' | 'hypertrophy' | 'pure_strength' | 'cutting_phase' | 'lean_bulk';
+  hasCompletedOnboarding: boolean;
+}
+
