@@ -6,12 +6,15 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    Dimensions,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 
@@ -37,6 +40,7 @@ export default function ProgressScreen() {
 
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
   const [showExercisePicker, setShowExercisePicker] = useState(false);
+  const [filterText, setFilterText] = useState('');
 
   // Calculate progress data for all exercises
   const exerciseProgressMap = useMemo(() => {
@@ -106,6 +110,16 @@ export default function ProgressScreen() {
     return Array.from(exerciseProgressMap.values())
       .sort((a, b) => b.lastPerformed.localeCompare(a.lastPerformed));
   }, [exerciseProgressMap]);
+
+  // Filter exercise list based on search text
+  const filteredExerciseList = useMemo(() => {
+    if (!filterText.trim()) {
+      return exerciseList;
+    }
+    return exerciseList.filter(exercise =>
+      exercise.exerciseName.toLowerCase().includes(filterText.toLowerCase())
+    );
+  }, [exerciseList, filterText]);
 
   // Auto-select first exercise if none selected
   useEffect(() => {
@@ -340,18 +354,61 @@ export default function ProgressScreen() {
         visible={showExercisePicker}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setShowExercisePicker(false)}
+        onRequestClose={() => {
+          setShowExercisePicker(false);
+          setFilterText('');
+        }}
       >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
-            <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Select Exercise</ThemedText>
-              <TouchableOpacity onPress={() => setShowExercisePicker(false)}>
-                <Ionicons name="close" size={28} color={colors.text} />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.exerciseList}>
-              {exerciseList.map((exercise) => (
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1}
+          onPress={() => {
+            setShowExercisePicker(false);
+            setFilterText('');
+          }}
+        >
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
+          >
+            <TouchableOpacity 
+              activeOpacity={1} 
+              onPress={(e) => e.stopPropagation()}
+              style={styles.modalWrapper}
+            >
+              <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
+                <View style={styles.modalHeader}>
+                  <ThemedText style={styles.modalTitle}>Select Exercise</ThemedText>
+                  <TouchableOpacity onPress={() => {
+                    setShowExercisePicker(false);
+                    setFilterText('');
+                  }}>
+                    <Ionicons name="close" size={28} color={colors.text} />
+                  </TouchableOpacity>
+                </View>
+                
+                {/* Search Filter */}
+                <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
+                  <Ionicons name="search" size={20} color={colors.icon} />
+                  <TextInput
+                    style={[styles.searchInput, { color: colors.text }]}
+                    placeholder="Search exercises..."
+                    placeholderTextColor={colors.icon}
+                    value={filterText}
+                    onChangeText={setFilterText}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  {filterText.length > 0 && (
+                    <TouchableOpacity onPress={() => setFilterText('')}>
+                      <Ionicons name="close-circle" size={20} color={colors.icon} />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                <ScrollView style={styles.exerciseList}>
+                  {filteredExerciseList.length > 0 ? (
+                    filteredExerciseList.map((exercise) => (
                 <TouchableOpacity
                   key={exercise.exerciseName}
                   style={[
@@ -388,10 +445,20 @@ export default function ProgressScreen() {
                     <Ionicons name="checkmark-circle" size={24} color="#fff" />
                   )}
                 </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+                ))
+              ) : (
+                <View style={styles.noResults}>
+                  <Ionicons name="search-outline" size={48} color={colors.icon} />
+                  <ThemedText style={styles.noResultsText}>
+                    No exercises found matching "{filterText}"
+                  </ThemedText>
+                </View>
+              )}
+                </ScrollView>
+              </View>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+        </TouchableOpacity>
       </Modal>
     </ThemedView>
   );
@@ -561,12 +628,25 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
+  },
+  keyboardView: {
+    width: '100%',
+    maxHeight: '90%',
+    marginTop: 60,
+  },
+  modalWrapper: {
+    width: '100%',
   },
   modalContent: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '80%',
+    borderRadius: 20,
+    marginHorizontal: 16,
+    maxHeight: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 5,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -575,13 +655,45 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 4,
+  },
   exerciseList: {
     padding: 16,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  noResults: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 32,
+  },
+  noResultsText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 16,
+    opacity: 0.7,
   },
   exerciseItem: {
     flexDirection: 'row',
