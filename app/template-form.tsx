@@ -7,7 +7,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Exercise, ExerciseLibraryItem, Template } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     Alert,
     KeyboardAvoidingView,
@@ -16,7 +16,7 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 
 export default function TemplateFormScreen() {
@@ -25,6 +25,7 @@ export default function TemplateFormScreen() {
   const { saveTemplate } = useData();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const existingTemplate: Template | null = params.template 
     ? JSON.parse(params.template as string) 
@@ -114,18 +115,25 @@ export default function TemplateFormScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ExercisePicker
-        visible={showExercisePicker}
-        onClose={() => setShowExercisePicker(false)}
-        onSelect={handleExerciseSelect}
-        title={editingExerciseId ? 'Change Exercise' : 'Select Exercise'}
-      />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView contentContainerStyle={styles.content}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+    >
+      <ThemedView style={styles.innerContainer}>
+        <ExercisePicker
+          visible={showExercisePicker}
+          onClose={() => setShowExercisePicker(false)}
+          onSelect={handleExerciseSelect}
+          title={editingExerciseId ? 'Change Exercise' : 'Select Exercise'}
+        />
+        <ScrollView 
+          ref={scrollViewRef}
+          style={styles.scrollView}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
           <View style={[styles.section, { backgroundColor: colors.card }]}>
             <ThemedText style={styles.label}>Template Name</ThemedText>
             <TextInput
@@ -242,26 +250,27 @@ export default function TemplateFormScreen() {
               </View>
             )}
           </View>
-        </ScrollView>
 
-        <View style={[styles.footer, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
-          <TouchableOpacity
-            style={[styles.cancelButton, { borderColor: colors.border }]}
-            onPress={() => router.back()}
-          >
-            <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.saveButton, { backgroundColor: colors.tint }]}
-            onPress={handleSave}
-          >
-            <ThemedText style={styles.saveButtonText}>
-              {existingTemplate ? 'Update' : 'Save'}
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </ThemedView>
+          {/* Footer buttons inside ScrollView */}
+          <View style={[styles.footer, { backgroundColor: colors.card, borderTopColor: colors.border }]}>
+            <TouchableOpacity
+              style={[styles.cancelButton, { borderColor: colors.border }]}
+              onPress={() => router.back()}
+            >
+              <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.saveButton, { backgroundColor: colors.tint }]}
+              onPress={handleSave}
+            >
+              <ThemedText style={styles.saveButtonText}>
+                {existingTemplate ? 'Update' : 'Save'}
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -269,12 +278,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  keyboardView: {
+  innerContainer: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   content: {
     padding: 16,
-    paddingBottom: 100,
+    paddingBottom: 32,
   },
   section: {
     padding: 16,
@@ -370,13 +382,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     padding: 16,
+    paddingTop: 24,
     gap: 12,
+    marginTop: 16,
     borderTopWidth: 1,
   },
   cancelButton: {

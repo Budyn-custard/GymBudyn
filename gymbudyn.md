@@ -77,6 +77,7 @@ Production ready MVP with offline functionality. Full workout management includi
 - Quick text selection for efficient data entry
 - Complete datetime tracking with start and end timestamps
 - Active workout tile filters out completed workouts (with endDateTime set)
+- **Keyboard-Aware UI** - Save/Cancel buttons remain accessible when keyboard is open in template form
 
 ## Personalization Features
 - **Weekly Frequency Selection** - Choose 3x, 4x, 5x, or 6x workouts per week
