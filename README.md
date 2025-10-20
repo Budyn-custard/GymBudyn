@@ -6,11 +6,13 @@ A production-ready React Native (Expo) mobile app for logging workouts offline. 
 
 ### Core Functionality
 - ✅ **User Personalization** - Weekly frequency selection (3x-6x) and custom workout day scheduling
+- ✅ **Theme Customization** - Choose between light, dark, or automatic (system) theme
 - ✅ **Smart Home Screen** - Clean, organized dashboard with workout stats and schedule awareness
 - ✅ **Templates** - Create/edit workout templates with exercises
 - ✅ **Science-Based Programs** - 7 pre-built templates based on sports science research
 - ✅ **Workout Sessions** - Log workouts with set completion tracking
 - ✅ **History** - View past workouts chronologically
+- ✅ **Progress Analytics** - Visual charts and statistics for exercise progression
 - ✅ **Calendar** - Monthly view with workout frequency
 - ✅ **Exercise Library** - 50+ exercises with search/filter
 - ✅ **Progress Tracking** - Previous workout data integration
@@ -22,9 +24,18 @@ A production-ready React Native (Expo) mobile app for logging workouts offline. 
 ### Personalization
 - **Weekly Frequency Selection** - Choose 3x, 4x, 5x, or 6x workouts per week
 - **Custom Day Scheduling** - Select specific days for your workouts (Mon-Sun)
+- **Theme Preference** - Pick light mode, dark mode, or automatic (follows system)
 - **Goal-Based Recommendations** - Optional fitness goal selection
 - **Schedule Awareness** - Home screen shows if today is a scheduled workout day
 - **Next Workout Preview** - Displays upcoming workout day when not scheduled today
+
+### Progress Tracking & Analytics
+- **Exercise-Specific Progress** - Track performance for each individual exercise
+- **Visual Charts** - Beautiful line charts showing weight and volume progression over time
+- **Performance Metrics** - Max weight, average weight, total volume, and workout count
+- **Progress Indicators** - Percentage improvements and trend arrows
+- **Workout History** - Recent performance data for each exercise
+- **Smart Data Aggregation** - Automatically calculates progress from completed workouts
 
 ### Science-Based Templates
 GymBudyn includes 7 professionally designed workout programs:
@@ -75,6 +86,7 @@ Each template includes exercise alternatives, set/rep recommendations, progressi
 - **Language**: TypeScript
 - **Navigation**: Expo Router
 - **Storage**: AsyncStorage (local persistence)
+- **Charts**: react-native-chart-kit + react-native-svg
 - **Icons**: Ionicons
 - **UI**: Native components with custom theming
 
@@ -87,8 +99,9 @@ GymBudyn/
 │   │   ├── index.tsx        # Smart home screen with stats
 │   │   ├── templates.tsx    # Template management
 │   │   ├── history.tsx      # Workout history
+│   │   ├── progress.tsx     # Progress analytics with charts
 │   │   ├── calendar.tsx     # Calendar view
-│   │   └── preferences.tsx  # User personalization
+│   │   └── preferences.tsx  # User personalization & theme
 │   ├── template-form.tsx    # Template creation/edit form
 │   ├── workout-session.tsx  # Active workout screen
 │   └── workout-detail.tsx   # Workout details view
@@ -135,6 +148,7 @@ interface UserPreferences {
   weeklyFrequency: 3 | 4 | 5 | 6;
   selectedDays: string[];
   preferredGoal?: 'general_strength' | 'hypertrophy' | 'pure_strength' | 'cutting_phase' | 'lean_bulk';
+  themePreference?: 'light' | 'dark' | 'automatic';
   hasCompletedOnboarding: boolean;
 }
 ```
@@ -142,7 +156,9 @@ interface UserPreferences {
 ## 🎯 Current Status
 
 Production-ready MVP with offline functionality. Full workout management including:
-- **User Personalization System** - Set weekly frequency (3x-6x) and choose specific workout days
+- **User Personalization System** - Set weekly frequency (3x-6x), choose specific workout days, and customize theme
+- **Progress Analytics** - Visual charts showing weight and volume progression for every exercise
+- **Theme Customization** - Light, dark, or automatic theme that follows system preferences
 - **Smart Home Interface** - Redesigned clean dashboard with workout stats and schedule awareness
 - **Science-Based Templates** - 7 professionally designed programs
 - **Flexible Template System** - Unified modal for choosing custom and default templates
@@ -158,9 +174,10 @@ Production-ready MVP with offline functionality. Full workout management includi
 - .NET 10 Web API backend for data synchronization
 - Multi-device sync
 - Exercise images and videos
-- Advanced progress charts and analytics
+- Advanced analytics (1RM calculator, periodization planning)
 - Social features and workout sharing
 - Web UI for trainers (Blazor or React)
+- Export progress data (PDF/CSV)
 
 ## 📄 License
 

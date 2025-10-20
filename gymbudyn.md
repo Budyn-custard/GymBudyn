@@ -11,11 +11,13 @@
 
 ## Core Features
 - ✅ **User Personalization** - Weekly frequency selection (3x-6x) and custom workout day scheduling
+- ✅ **Theme Customization** - Choose between light, dark, or automatic (system) theme
 - ✅ **Smart Home Screen** - Clean, organized dashboard with workout stats and schedule awareness
 - ✅ **Templates** - Create/edit workout templates with exercises
 - ✅ **Science-Based Programs** - 7 pre-built templates based on sports science research
 - ✅ **Workout Sessions** - Log workouts with set completion tracking
 - ✅ **History** - View past workouts chronologically
+- ✅ **Progress Analytics** - Visual charts and statistics for exercise progression
 - ✅ **Calendar** - Monthly view with workout frequency
 - ✅ **Exercise Library** - 50+ exercises with search/filter
 - ✅ **Progress Tracking** - Previous workout data integration
@@ -53,21 +55,25 @@ interface UserPreferences {
   weeklyFrequency: 3 | 4 | 5 | 6; // Number of workouts per week
   selectedDays: string[]; // Array of day names
   preferredGoal?: 'general_strength' | 'hypertrophy' | 'pure_strength' | 'cutting_phase' | 'lean_bulk';
+  themePreference?: 'light' | 'dark' | 'automatic'; // Theme preference (defaults to automatic)
   hasCompletedOnboarding: boolean;
 }
 ```
 
 ## Key Screens
 - **Home** - Smart dashboard with stats, schedule awareness, and quick actions
-- **Preferences** - Personalize weekly frequency, workout days, and fitness goals
+- **Preferences** - Personalize weekly frequency, workout days, theme, and fitness goals
 - **Templates** - Manage workout templates
 - **Workout Session** - Log sets with completion tracking
 - **History** - Past workout list
+- **Progress** - Exercise-specific analytics with visual charts
 - **Calendar** - Monthly workout view
 
 ## Current Status
 Production ready MVP with offline functionality. Full workout management including:
-- **User Personalization System** - Set weekly frequency (3x-6x) and choose specific workout days
+- **User Personalization System** - Set weekly frequency (3x-6x), choose specific workout days, and customize theme
+- **Progress Analytics** - Visual charts showing weight and volume progression for every exercise
+- **Theme Customization** - Light, dark, or automatic theme that follows system preferences
 - **Smart Home Interface** - Redesigned clean dashboard with workout stats and schedule awareness
 - **Science-Based Templates** - 7 professionally designed programs (Foundations, PPL, Upper/Lower, etc.)
 - **Flexible Template System** - Unified modal for choosing custom and default templates
@@ -82,9 +88,18 @@ Production ready MVP with offline functionality. Full workout management includi
 ## Personalization Features
 - **Weekly Frequency Selection** - Choose 3x, 4x, 5x, or 6x workouts per week
 - **Custom Day Scheduling** - Select specific days for your workouts (Mon-Sun)
+- **Theme Preference** - Pick light mode, dark mode, or automatic (follows system)
 - **Goal-Based Recommendations** - Optional fitness goal selection
 - **Schedule Awareness** - Home screen shows if today is a scheduled workout day
 - **Next Workout Preview** - Displays upcoming workout day when not scheduled today
+
+## Progress Analytics Features
+- **Exercise-Specific Tracking** - View progress for each individual exercise
+- **Visual Charts** - Beautiful line charts showing weight and volume progression
+- **Performance Metrics** - Max weight, average weight, total volume, and workout count
+- **Progress Indicators** - Percentage improvements and trend arrows
+- **Workout History** - Recent performance data for each exercise
+- **Smart Data Aggregation** - Automatically calculates progress from completed workouts
 
 ## Science-Based Templates
 GymBudyn includes 7 professionally designed workout programs:

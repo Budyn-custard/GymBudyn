@@ -16,7 +16,7 @@ interface DataContextType {
   saveUserPreferences: (preferences: UserPreferences) => Promise<void>;
 }
 
-const DataContext = createContext<DataContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [templates, setTemplates] = useState<Template[]>([]);

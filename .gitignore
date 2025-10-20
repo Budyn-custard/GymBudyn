@@ -44,3 +44,4 @@ app-example
 /.vscode
 app.json
 eas.json
+FEATURE_UPDATE.md

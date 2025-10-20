@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { DataContext } from '@/contexts/DataContext';
+import { useContext, useEffect, useState } from 'react';
 import { useColorScheme as useRNColorScheme } from 'react-native';
 
 /**
@@ -6,16 +7,29 @@ import { useColorScheme as useRNColorScheme } from 'react-native';
  */
 export function useColorScheme() {
   const [hasHydrated, setHasHydrated] = useState(false);
+  const systemColorScheme = useRNColorScheme();
+  
+  // Safely access context - it might not be available yet (before DataProvider mounts)
+  const context = useContext(DataContext);
 
   useEffect(() => {
     setHasHydrated(true);
   }, []);
 
-  const colorScheme = useRNColorScheme();
-
-  if (hasHydrated) {
-    return colorScheme;
+  if (!hasHydrated) {
+    return 'light';
   }
 
-  return 'light';
+  // If context is not available or no preferences, use system color scheme
+  if (!context?.userPreferences) {
+    return systemColorScheme;
+  }
+
+  const themePreference = context.userPreferences.themePreference ?? 'automatic';
+  
+  if (themePreference === 'automatic') {
+    return systemColorScheme;
+  }
+  
+  return themePreference;
 }

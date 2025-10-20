@@ -26,6 +26,12 @@ const GOAL_OPTIONS = [
   { value: 'lean_bulk', label: 'Lean Bulk', icon: 'trending-up' },
 ] as const;
 
+const THEME_OPTIONS = [
+  { value: 'automatic', label: 'Automatic', description: 'Follow system', icon: 'phone-portrait' },
+  { value: 'light', label: 'Light', description: 'Always light', icon: 'sunny' },
+  { value: 'dark', label: 'Dark', description: 'Always dark', icon: 'moon' },
+] as const;
+
 export default function PreferencesScreen() {
   const { userPreferences, saveUserPreferences } = useData();
   const router = useRouter();
@@ -35,12 +41,14 @@ export default function PreferencesScreen() {
   const [weeklyFrequency, setWeeklyFrequency] = useState<3 | 4 | 5 | 6>(3);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [preferredGoal, setPreferredGoal] = useState<string | undefined>();
+  const [themePreference, setThemePreference] = useState<'light' | 'dark' | 'automatic'>('automatic');
 
   useEffect(() => {
     if (userPreferences) {
       setWeeklyFrequency(userPreferences.weeklyFrequency);
       setSelectedDays(userPreferences.selectedDays || []);
       setPreferredGoal(userPreferences.preferredGoal);
+      setThemePreference(userPreferences.themePreference || 'automatic');
     }
   }, [userPreferences]);
 
@@ -73,6 +81,7 @@ export default function PreferencesScreen() {
       weeklyFrequency,
       selectedDays,
       preferredGoal: preferredGoal as any,
+      themePreference,
       hasCompletedOnboarding: true,
     };
 
@@ -180,9 +189,56 @@ export default function PreferencesScreen() {
         </View>
 
         <View style={[styles.section, { backgroundColor: colors.card }]}>
+          <ThemedText style={styles.sectionTitle}>App Theme</ThemedText>
+          <ThemedText style={styles.sectionSubtitle}>
+            Choose your preferred color theme
+          </ThemedText>
+          <View style={styles.themeOptions}>
+            {THEME_OPTIONS.map((option) => (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  styles.themeOption,
+                  { borderColor: colors.border },
+                  themePreference === option.value && {
+                    backgroundColor: colors.tint,
+                    borderColor: colors.tint,
+                  },
+                ]}
+                onPress={() => setThemePreference(option.value)}
+              >
+                <Ionicons
+                  name={option.icon as any}
+                  size={24}
+                  color={themePreference === option.value ? '#fff' : colors.icon}
+                />
+                <View style={styles.themeTextContainer}>
+                  <ThemedText
+                    style={[
+                      styles.themeLabel,
+                      themePreference === option.value && styles.themeLabelSelected,
+                    ]}
+                  >
+                    {option.label}
+                  </ThemedText>
+                  <ThemedText
+                    style={[
+                      styles.themeDescription,
+                      themePreference === option.value && styles.themeDescriptionSelected,
+                    ]}
+                  >
+                    {option.description}
+                  </ThemedText>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        <View style={[styles.section, { backgroundColor: colors.card }]}>
           <ThemedText style={styles.sectionTitle}>Training Goal (Optional)</ThemedText>
           <ThemedText style={styles.sectionSubtitle}>
-            What's your primary fitness goal?
+            What&apos;s your primary fitness goal?
           </ThemedText>
           <View style={styles.goalOptions}>
             {GOAL_OPTIONS.map((option) => (
@@ -330,6 +386,36 @@ const styles = StyleSheet.create({
   },
   goalLabelSelected: {
     color: '#fff',
+  },
+  themeOptions: {
+    gap: 12,
+  },
+  themeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderWidth: 2,
+    borderRadius: 12,
+    gap: 12,
+  },
+  themeTextContainer: {
+    flex: 1,
+  },
+  themeLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  themeLabelSelected: {
+    color: '#fff',
+  },
+  themeDescription: {
+    fontSize: 14,
+    opacity: 0.7,
+  },
+  themeDescriptionSelected: {
+    color: '#fff',
+    opacity: 0.9,
   },
   saveButton: {
     flexDirection: 'row',
