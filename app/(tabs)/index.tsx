@@ -140,25 +140,32 @@ export default function HomeScreen() {
 
         {/* Active Workout or Main Action Card */}
         {activeWorkout ? (
-          <TouchableOpacity
-            style={[styles.mainCard, { backgroundColor: '#FF9500' }]}
-            onPress={handleResumeWorkout}
-          >
-            <View style={styles.mainCardHeader}>
-              <Ionicons name="timer" size={32} color="#fff" />
-              <ThemedText style={styles.mainCardTitle}>Resume Workout</ThemedText>
-            </View>
-            <ThemedText style={styles.mainCardSubtitle}>{activeWorkout.template.name}</ThemedText>
+          <View style={styles.activeWorkoutContainer}>
+            <ThemedText style={styles.activeWorkoutLabel}>Active Workout</ThemedText>
             <TouchableOpacity
-              style={styles.discardIconButton}
-              onPress={(e) => {
-                e.stopPropagation();
-                handleDiscardActiveWorkout();
-              }}
+              style={[styles.resumeCard, { backgroundColor: colors.tint }]}
+              onPress={handleResumeWorkout}
             >
-              <Ionicons name="close" size={20} color="#fff" />
+              <View style={styles.resumeCardContent}>
+                <View style={styles.resumeCardIcon}>
+                  <Ionicons name="play-circle" size={48} color="#fff" />
+                </View>
+                <View style={styles.resumeCardInfo}>
+                  <ThemedText style={styles.resumeCardTitle}>{activeWorkout.template.name}</ThemedText>
+                  <ThemedText style={styles.resumeCardSubtitle}>Tap to continue</ThemedText>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.discardButton}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  handleDiscardActiveWorkout();
+                }}
+              >
+                <Ionicons name="trash-outline" size={20} color="#fff" />
+              </TouchableOpacity>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         ) : (
           <View style={[styles.mainCard, { backgroundColor: colors.tint }]}>
             <View style={styles.mainCardIconContainer}>
@@ -366,6 +373,64 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150
   },
+  activeWorkoutContainer: {
+    marginBottom: 24,
+  },
+  activeWorkoutLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+    opacity: 0.7,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  resumeCard: {
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  resumeCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  resumeCardIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resumeCardInfo: {
+    flex: 1,
+  },
+  resumeCardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  resumeCardSubtitle: {
+    fontSize: 14,
+    color: '#fff',
+    opacity: 0.9,
+  },
+  discardButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   mainCardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -403,17 +468,6 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: 17,
     fontWeight: 'bold',
-  },
-  discardIconButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   progressSection: {
     marginBottom: 28,

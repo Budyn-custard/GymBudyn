@@ -333,7 +333,6 @@ export default function ProgressScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText style={styles.headerTitle}>Progress</ThemedText>
         <TouchableOpacity
           style={[styles.selectButton, { backgroundColor: colors.tint }]}
           onPress={() => setShowExercisePicker(true)}
@@ -471,11 +470,6 @@ const styles = StyleSheet.create({
   header: {
     padding: 16,
     paddingTop: 8,
-    gap: 12,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
   },
   selectButton: {
     flexDirection: 'row',

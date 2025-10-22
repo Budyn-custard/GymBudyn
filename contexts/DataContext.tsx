@@ -1,11 +1,12 @@
 import { storageService } from '@/services/storage';
-import { Template, UserPreferences, Workout } from '@/types';
+import { CustomExercise, Template, UserPreferences, Workout } from '@/types';
 import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 
 interface DataContextType {
   templates: Template[];
   workouts: Workout[];
   userPreferences: UserPreferences | null;
+  customExercises: CustomExercise[];
   loading: boolean;
   refreshData: () => Promise<void>;
   saveTemplate: (template: Template) => Promise<void>;
@@ -14,6 +15,8 @@ interface DataContextType {
   deleteWorkout: (workoutId: string) => Promise<void>;
   getLastWorkoutWithExercise: (exerciseName: string) => Promise<any>;
   saveUserPreferences: (preferences: UserPreferences) => Promise<void>;
+  saveCustomExercise: (exercise: CustomExercise) => Promise<void>;
+  deleteCustomExercise: (exerciseId: string) => Promise<void>;
 }
 
 export const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -22,6 +25,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [templates, setTemplates] = useState<Template[]>([]);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
+  const [customExercises, setCustomExercises] = useState<CustomExercise[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refreshData = useCallback(async () => {
@@ -38,6 +42,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       setTemplates(data.templates);
       setWorkouts(data.workouts.sort((a, b) => b.date.localeCompare(a.date)));
+      setCustomExercises(data.customExercises || []);
       
       // Load user preferences
       const preferences = await storageService.getUserPreferences();
@@ -47,6 +52,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Set empty data on error to prevent hanging
       setTemplates([]);
       setWorkouts([]);
+      setCustomExercises([]);
       setUserPreferences(null);
     } finally {
       setLoading(false);
@@ -86,12 +92,23 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUserPreferences(preferences);
   }, []);
 
+  const saveCustomExerciseCallback = useCallback(async (exercise: CustomExercise) => {
+    await storageService.saveCustomExercise(exercise);
+    await refreshData();
+  }, [refreshData]);
+
+  const deleteCustomExerciseCallback = useCallback(async (exerciseId: string) => {
+    await storageService.deleteCustomExercise(exerciseId);
+    await refreshData();
+  }, [refreshData]);
+
   return (
     <DataContext.Provider
       value={{
         templates,
         workouts,
         userPreferences,
+        customExercises,
         loading,
         refreshData,
         saveTemplate,
@@ -100,6 +117,8 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         deleteWorkout,
         getLastWorkoutWithExercise,
         saveUserPreferences: saveUserPreferencesCallback,
+        saveCustomExercise: saveCustomExerciseCallback,
+        deleteCustomExercise: deleteCustomExerciseCallback,
       }}
     >
       {children}

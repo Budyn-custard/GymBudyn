@@ -41,6 +41,7 @@ export interface Workout {
 export interface AppData {
   templates: Template[];
   workouts: Workout[];
+  customExercises?: CustomExercise[];
 }
 
 export interface ActiveWorkoutSession {
@@ -68,6 +69,15 @@ export interface ExerciseLibraryItem {
   isCompound: boolean;
   unit: string;
   instructions: string;
+}
+
+// Custom exercise created by user
+export interface CustomExercise {
+  id: string;
+  name: string;
+  muscleGroup: string;
+  equipment: string;
+  isCustom: true;
 }
 
 // User Preferences

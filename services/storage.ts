@@ -1,4 +1,4 @@
-import { ActiveWorkoutSession, AppData, Template, UserPreferences, Workout, WorkoutExercise } from '@/types';
+import { ActiveWorkoutSession, AppData, CustomExercise, Template, UserPreferences, Workout, WorkoutExercise } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@gymbudyn_data';
@@ -8,6 +8,7 @@ const PREFERENCES_KEY = '@gymbudyn_preferences';
 const defaultData: AppData = {
   templates: [],
   workouts: [],
+  customExercises: [],
 };
 
 export const storageService = {
@@ -171,6 +172,34 @@ export const storageService = {
     } catch (error) {
       console.error('Error saving user preferences:', error);
       throw error;
+    }
+  },
+
+  // Custom Exercises
+  async getCustomExercises(): Promise<CustomExercise[]> {
+    const data = await this.getData();
+    return data.customExercises || [];
+  },
+
+  async saveCustomExercise(exercise: CustomExercise): Promise<void> {
+    const data = await this.getData();
+    if (!data.customExercises) {
+      data.customExercises = [];
+    }
+    const index = data.customExercises.findIndex(e => e.id === exercise.id);
+    if (index >= 0) {
+      data.customExercises[index] = exercise;
+    } else {
+      data.customExercises.push(exercise);
+    }
+    await this.saveData(data);
+  },
+
+  async deleteCustomExercise(exerciseId: string): Promise<void> {
+    const data = await this.getData();
+    if (data.customExercises) {
+      data.customExercises = data.customExercises.filter(e => e.id !== exerciseId);
+      await this.saveData(data);
     }
   },
 };

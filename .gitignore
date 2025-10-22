@@ -45,3 +45,4 @@ app-example
 app.json
 eas.json
 FEATURE_UPDATE.md
+app.config.js

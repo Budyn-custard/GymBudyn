@@ -18,11 +18,11 @@
 - ✅ **Workout Sessions** - Log workouts with set completion tracking
 - ✅ **History** - View past workouts chronologically
 - ✅ **Progress Analytics** - Visual charts and statistics for exercise progression
-- ✅ **Calendar** - Monthly view with workout frequency
-- ✅ **Exercise Library** - 50+ exercises with search/filter
+- ✅ **Exercise Library** - 50+ exercises with search/filter and custom exercise creation
+- ✅ **Custom Exercises** - Add your own exercises with muscle group and equipment tracking
 - ✅ **Progress Tracking** - Previous workout data integration
 - ✅ **Dynamic Exercise Management** - Add/remove exercises during workout via swipe & picker
-- ✅ **Active Workout Tracking** - Resume interrupted workouts with finished state detection
+- ✅ **Active Workout Tracking** - Resume interrupted workouts with improved visual design
 - ✅ **Quick Input** - Auto-select text on focus for fast value editing
 - ✅ **DateTime Tracking** - Start and end timestamps for every workout session
 
@@ -51,6 +51,14 @@ interface WorkoutSet {
   completed?: boolean;
 }
 
+interface CustomExercise {
+  id: string;
+  name: string;
+  muscleGroup: string;
+  equipment: string;
+  isCustom: true;
+}
+
 interface UserPreferences {
   weeklyFrequency: 3 | 4 | 5 | 6; // Number of workouts per week
   selectedDays: string[]; // Array of day names
@@ -61,25 +69,27 @@ interface UserPreferences {
 ```
 
 ## Key Screens
-- **Home** - Smart dashboard with stats, schedule awareness, and quick actions
+- **Home** - Smart dashboard with stats, schedule awareness, and improved resume workout card
 - **Preferences** - Personalize weekly frequency, workout days, theme, and fitness goals
 - **Templates** - Manage workout templates
 - **Workout Session** - Log sets with completion tracking
 - **History** - Past workout list
 - **Progress** - Exercise-specific analytics with visual charts
-- **Calendar** - Monthly workout view
+- **Exercises** - Browse 50+ exercises and create custom ones
 
 ## Current Status
 Production ready MVP with offline functionality. Full workout management including:
 - **User Personalization System** - Set weekly frequency (3x-6x), choose specific workout days, and customize theme
 - **Progress Analytics** - Visual charts showing weight and volume progression for every exercise
 - **Theme Customization** - Light, dark, or automatic theme that follows system preferences
-- **Smart Home Interface** - Redesigned clean dashboard with workout stats and schedule awareness
+- **Smart Home Interface** - Clean dashboard with workout stats, schedule awareness, and enhanced resume workout card
 - **Science-Based Templates** - 7 professionally designed programs (Foundations, PPL, Upper/Lower, etc.)
 - **Flexible Template System** - Unified modal for choosing custom and default templates
+- **Exercise Management** - 50+ built-in exercises with search/filter by muscle group
+- **Custom Exercise Creation** - Add your own exercises with muscle group and equipment tracking
 - Dynamic exercise add/remove during active sessions
 - Swipe-to-delete gesture support for exercises
-- Active workout state persistence with finished date tracking
+- Active workout state persistence with improved visual design
 - Quick text selection for efficient data entry
 - Complete datetime tracking with start and end timestamps
 - Active workout tile filters out completed workouts (with endDateTime set)

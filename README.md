@@ -13,11 +13,11 @@ A production-ready React Native (Expo) mobile app for logging workouts offline. 
 - ✅ **Workout Sessions** - Log workouts with set completion tracking
 - ✅ **History** - View past workouts chronologically
 - ✅ **Progress Analytics** - Visual charts and statistics for exercise progression
-- ✅ **Calendar** - Monthly view with workout frequency
-- ✅ **Exercise Library** - 50+ exercises with search/filter
+- ✅ **Exercise Library** - 50+ exercises with search/filter and custom exercise creation
+- ✅ **Custom Exercises** - Add your own exercises with muscle group and equipment tracking
 - ✅ **Progress Tracking** - Previous workout data integration
 - ✅ **Dynamic Exercise Management** - Add/remove exercises during workout via swipe & picker
-- ✅ **Active Workout Tracking** - Resume interrupted workouts with finished state detection
+- ✅ **Active Workout Tracking** - Resume interrupted workouts with improved visual design
 - ✅ **Quick Input** - Auto-select text on focus for fast value editing
 - ✅ **DateTime Tracking** - Start and end timestamps for every workout session
 
@@ -100,7 +100,7 @@ GymBudyn/
 │   │   ├── templates.tsx    # Template management
 │   │   ├── history.tsx      # Workout history
 │   │   ├── progress.tsx     # Progress analytics with charts
-│   │   ├── calendar.tsx     # Calendar view
+│   │   ├── exercises.tsx    # Exercise library & custom exercise management
 │   │   └── preferences.tsx  # User personalization & theme
 │   ├── template-form.tsx    # Template creation/edit form
 │   ├── workout-session.tsx  # Active workout screen
@@ -110,7 +110,7 @@ GymBudyn/
 │       └── exercise-picker.tsx
 ├── contexts/                # React contexts (DataContext)
 ├── services/                # Storage and data services
-│   ├── storage.ts           # AsyncStorage wrapper
+│   ├── storage.ts           # AsyncStorage wrapper with custom exercise support
 │   ├── exerciseLibrary.ts   # Exercise database
 │   └── defaultTemplates.ts  # Pre-built templates
 ├── types/                   # TypeScript type definitions
@@ -144,6 +144,14 @@ interface WorkoutSet {
   completed?: boolean;
 }
 
+interface CustomExercise {
+  id: string;
+  name: string;
+  muscleGroup: string;
+  equipment: string;
+  isCustom: true;
+}
+
 interface UserPreferences {
   weeklyFrequency: 3 | 4 | 5 | 6;
   selectedDays: string[];
@@ -159,12 +167,14 @@ Production-ready MVP with offline functionality. Full workout management includi
 - **User Personalization System** - Set weekly frequency (3x-6x), choose specific workout days, and customize theme
 - **Progress Analytics** - Visual charts showing weight and volume progression for every exercise
 - **Theme Customization** - Light, dark, or automatic theme that follows system preferences
-- **Smart Home Interface** - Redesigned clean dashboard with workout stats and schedule awareness
+- **Smart Home Interface** - Clean dashboard with workout stats, schedule awareness, and improved resume workout card
 - **Science-Based Templates** - 7 professionally designed programs
 - **Flexible Template System** - Unified modal for choosing custom and default templates
+- **Exercise Management** - 50+ built-in exercises plus ability to create custom exercises
+- **Custom Exercise Creation** - Add your own exercises with muscle group and equipment tracking
 - Dynamic exercise add/remove during active sessions
 - Swipe-to-delete gesture support for exercises
-- Active workout state persistence with finished date tracking
+- Active workout state persistence with enhanced visual design
 - Quick text selection for efficient data entry
 - Complete datetime tracking with start and end timestamps
 - Keyboard-aware UI with accessible Save/Cancel buttons

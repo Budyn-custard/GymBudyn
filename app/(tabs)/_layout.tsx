@@ -53,10 +53,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="calendar"
+        name="exercises"
         options={{
-          title: 'Calendar',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="calendar" color={color} />,
+          title: 'Exercises',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="fitness" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -64,6 +64,12 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color }) => <Ionicons size={28} name="settings-outline" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="calendar"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
